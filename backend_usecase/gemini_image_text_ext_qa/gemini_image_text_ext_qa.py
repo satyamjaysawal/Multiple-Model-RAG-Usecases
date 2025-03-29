@@ -9,7 +9,6 @@ from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from werkzeug.utils import secure_filename
 import re
-import json
 
 # Load environment variables
 load_dotenv()
@@ -27,7 +26,7 @@ CONFIG = {
     "ALLOWED_EXTENSIONS": {'png', 'jpg', 'jpeg', 'gif'},
     "OCR_TIMEOUT": 30,
     "EMBEDDING_BATCH_SIZE": 50,
-    "MAX_CONVERSATION_HISTORY": 5,  # Number of Q&A pairs to retain in conversation history
+    "MAX_CONVERSATION_HISTORY": 5,
 }
 
 os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
@@ -90,7 +89,7 @@ def add_chunks_to_qdrant(text_chunks, full_text, batch_size=CONFIG["EMBEDDING_BA
                 points.append(PointStruct(
                     id=point_id,
                     vector=embedding,
-                    payload={"chunk": batch[j], "full_text": full_text}  # Store full text in payload
+                    payload={"chunk": batch[j], "full_text": full_text}
                 ))
         qdrant_client.upsert(collection_name=collection_name, points=points)
     except Exception:
@@ -106,7 +105,6 @@ def get_relevant_chunks_and_full_text(query, top_k=5):
             limit=top_k
         )
         chunks = [hit.payload["chunk"] for hit in search_result]
-        # Use the full text from the first hit (assuming it's the same for all chunks of the same image)
         full_text = search_result[0].payload["full_text"] if search_result else ""
         return chunks, full_text
     except Exception:
@@ -125,7 +123,6 @@ def get_conversation_history():
 def add_to_conversation_history(question, answer):
     history = get_conversation_history()
     history.append({"question": question, "answer": answer})
-    # Limit history size
     if len(history) > CONFIG["MAX_CONVERSATION_HISTORY"]:
         history = history[-CONFIG["MAX_CONVERSATION_HISTORY"]:]
     session['conversation_history'] = history
@@ -135,16 +132,15 @@ def format_conversation_history():
     history = get_conversation_history()
     if not history:
         return ""
-    
+
     formatted = "**Previous Conversation:**\n\n"
     for i, qa in enumerate(history):
         formatted += f"Q{i+1}: {qa['question']}\n"
         formatted += f"A{i+1}: {qa['answer']}\n\n"
-    
+
     return formatted
 
 def clear_qdrant_data():
-    """Clear all data from Qdrant collection"""
     try:
         if qdrant_client.collection_exists(collection_name):
             qdrant_client.delete_collection(collection_name)
@@ -158,20 +154,17 @@ def clear_qdrant_data():
 
 @gemini_image_text_ext_qa.route('/gemini_image_text_ext_qa_delete_history', methods=['POST'])
 def delete_history():
-    """Route to handle the deletion of conversation history and vector data"""
-    # Clear session data
     session['conversation_history'] = []
     session['extracted_full_text'] = None
     session.modified = True
-    
-    # Clear Qdrant data
+
     success = clear_qdrant_data()
-    
+
     if success:
         flash("History and stored data cleared successfully.", 'success')
     else:
         flash("Failed to clear vector data. Session data cleared.", 'warning')
-    
+
     return redirect(url_for('gemini_image_text_ext_qa.gemini_image_text_ext_qa_handler'))
 
 @gemini_image_text_ext_qa.route('/gemini_image_text_ext_qa_generate', methods=['GET', 'POST'])
@@ -183,53 +176,47 @@ def gemini_image_text_ext_qa_handler():
 
     if request.method == 'POST':
         if 'image_files' in request.files:
-            # Reset conversation history when a new image is uploaded
             session['conversation_history'] = []
             session['extracted_full_text'] = None
-            
+
             image_file = request.files['image_files']
             if not image_file or not image_file.filename:
                 flash("No file selected.", 'error')
-                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html', 
-                                      CONFIG=CONFIG, 
-                                      conversation_history=conversation_history)
+                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html',
+                                       CONFIG=CONFIG,
+                                       conversation_history=conversation_history)
 
             filename = secure_filename(image_file.filename)
             if not allowed_file(filename):
                 flash("Invalid file type. Allowed: png, jpg, jpeg, gif.", 'error')
-                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html', 
-                                      CONFIG=CONFIG, 
-                                      conversation_history=conversation_history)
+                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html',
+                                       CONFIG=CONFIG,
+                                       conversation_history=conversation_history)
 
-            # Save temporarily
             image_path = os.path.join("/tmp", filename)
             image_file.save(image_path)
             if os.path.getsize(image_path) > CONFIG["MAX_FILE_SIZE_MB"] * 1024 * 1024:
                 os.remove(image_path)
                 flash("File too large.", 'error')
-                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html', 
-                                      CONFIG=CONFIG, 
-                                      conversation_history=conversation_history)
+                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html',
+                                       CONFIG=CONFIG,
+                                       conversation_history=conversation_history)
 
-            # Extract text
             text = ocr_manager.extract_text(image_path)
             if not text:
                 os.remove(image_path)
                 flash("No text extracted from the image.", 'warning')
-                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html', 
-                                      CONFIG=CONFIG, 
-                                      conversation_history=conversation_history)
+                return render_template('usecase/gemini_image_text_ext_qa/gemini_image_text_ext_qa.html',
+                                       CONFIG=CONFIG,
+                                       conversation_history=conversation_history)
 
-            # Store full text in session for future reference
             session['extracted_full_text'] = text
-            
-            # Chunk and embed with full text
+
             text_chunks = chunk_text(text)
             add_chunks_to_qdrant(text_chunks, text)
             uploaded_filename = filename
-            extracted_text = text  # Pass to template if you want to display it
+            extracted_text = text
 
-            # Clean up immediately
             os.remove(image_path)
             flash(f"Image '{filename}' processed successfully.", 'success')
 
@@ -238,20 +225,17 @@ def gemini_image_text_ext_qa_handler():
             if not user_question:
                 flash("Please enter a question.", 'error')
             else:
-                # Get full text from session if available
                 full_text = session.get('extracted_full_text', '')
-                
+
                 if not full_text:
-                    # If no session data, try to retrieve from vector search
                     _, full_text = get_relevant_chunks_and_full_text(user_question)
-                
+
                 if not full_text:
                     answer = "No relevant content found. Please upload an image first."
                     flash("No relevant content found.", 'warning')
                 else:
-                    # Format conversation history
                     conversation_context = format_conversation_history()
-                    
+
                     prompt = (
                         f"You are an expert assistant skilled at interpreting text extracted from images. "
                         f"Your task is to provide a clear, concise, and accurate answer to the user's question based solely on the text below. "
@@ -262,15 +246,14 @@ def gemini_image_text_ext_qa_handler():
                         f"**Current Question:**\n{user_question}\n\n"
                         f"Provide your answer below:"
                     )
-                    
+
                     try:
                         response = generation_model.generate_content(prompt)
                         answer = clean_response(response.text.strip())
-                        
-                        # Add to conversation history
+
                         add_to_conversation_history(user_question, answer)
                         conversation_history = get_conversation_history()
-                        
+
                         flash("Answer generated successfully.", 'success')
                     except Exception:
                         answer = "Could not generate an answer based on the extracted text."
