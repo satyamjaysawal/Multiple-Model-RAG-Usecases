@@ -9,12 +9,7 @@ from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from werkzeug.utils import secure_filename
 import re
-import logging
 import json
-
-# Set up logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -65,10 +60,8 @@ class OCRManager:
                 future = executor.submit(self.reader.readtext, image_path, detail=1)
                 ocr_result = future.result(timeout=timeout)
                 text = "\n".join([res[1] for res in ocr_result])
-                logger.debug(f"Extracted text: {text[:100]}...")
                 return text
-        except Exception as e:
-            logger.error(f"OCR extraction failed: {e}")
+        except Exception:
             return ""
 
 ocr_manager = OCRManager()
@@ -81,12 +74,10 @@ def chunk_text(text, chunk_size=512):
         return []
     words = text.split()
     chunks = [' '.join(words[i:i + chunk_size]) for i in range(0, len(words), chunk_size - 50)]
-    logger.debug(f"Text chunks created: {len(chunks)}")
     return chunks
 
 def add_chunks_to_qdrant(text_chunks, full_text, batch_size=CONFIG["EMBEDDING_BATCH_SIZE"]):
     if not text_chunks:
-        logger.warning("No chunks to embed.")
         return
     points = []
     try:
@@ -94,7 +85,6 @@ def add_chunks_to_qdrant(text_chunks, full_text, batch_size=CONFIG["EMBEDDING_BA
             batch = text_chunks[i:i + batch_size]
             response = genai.embed_content(model=embedding_model, content=batch)
             embeddings = response['embedding']
-            logger.debug(f"Generated {len(embeddings)} embeddings for batch")
             for j, embedding in enumerate(embeddings):
                 point_id = str(uuid.uuid4())
                 points.append(PointStruct(
@@ -103,9 +93,8 @@ def add_chunks_to_qdrant(text_chunks, full_text, batch_size=CONFIG["EMBEDDING_BA
                     payload={"chunk": batch[j], "full_text": full_text}  # Store full text in payload
                 ))
         qdrant_client.upsert(collection_name=collection_name, points=points)
-        logger.debug(f"Upserted {len(points)} points to Qdrant")
-    except Exception as e:
-        logger.error(f"Embedding or upsert failed: {e}")
+    except Exception:
+        pass
 
 def get_relevant_chunks_and_full_text(query, top_k=5):
     try:
@@ -119,10 +108,8 @@ def get_relevant_chunks_and_full_text(query, top_k=5):
         chunks = [hit.payload["chunk"] for hit in search_result]
         # Use the full text from the first hit (assuming it's the same for all chunks of the same image)
         full_text = search_result[0].payload["full_text"] if search_result else ""
-        logger.debug(f"Retrieved {len(chunks)} relevant chunks and full text: {full_text[:100]}...")
         return chunks, full_text
-    except Exception as e:
-        logger.error(f"Qdrant search failed: {e}")
+    except Exception:
         return [], ""
 
 def clean_response(text):
@@ -165,10 +152,8 @@ def clear_qdrant_data():
                 collection_name=collection_name,
                 vectors_config=VectorParams(size=dimension, distance=Distance.COSINE)
             )
-            logger.debug("Qdrant collection cleared and recreated")
         return True
-    except Exception as e:
-        logger.error(f"Failed to clear Qdrant data: {e}")
+    except Exception:
         return False
 
 @gemini_image_text_ext_qa.route('/gemini_image_text_ext_qa_delete_history', methods=['POST'])
@@ -281,15 +266,13 @@ def gemini_image_text_ext_qa_handler():
                     try:
                         response = generation_model.generate_content(prompt)
                         answer = clean_response(response.text.strip())
-                        logger.debug(f"Generated answer: {answer}")
                         
                         # Add to conversation history
                         add_to_conversation_history(user_question, answer)
                         conversation_history = get_conversation_history()
                         
                         flash("Answer generated successfully.", 'success')
-                    except Exception as e:
-                        logger.error(f"Generation failed: {e}")
+                    except Exception:
                         answer = "Could not generate an answer based on the extracted text."
                         flash("Error generating answer.", 'error')
 
