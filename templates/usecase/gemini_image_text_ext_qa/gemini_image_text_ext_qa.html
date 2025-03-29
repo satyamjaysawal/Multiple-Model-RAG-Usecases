@@ -1,469 +1,255 @@
+
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mx-auto mt-10 max-w-4xl p-6 sm:p-8 bg-white shadow-2xl rounded-xl border border-gray-200">
-    <div class="mb-10 text-center">
-        <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2 animate-fade-in-down" aria-label="Gemini AI Title">Gemini AI</h1>
-        <p class="text-gray-600 text-base sm:text-lg font-medium">Advanced Visual Q&A Assistant</p>
-        <div class="h-1 w-32 bg-gradient-to-r from-indigo-500 via-blue-500 to-green-500 mx-auto mt-4 rounded-full"></div>
-    </div>
+<div class="container mx-auto mt-8 max-w-5xl p-6 bg-gradient-to-br from-gray-50 to-gray-100 shadow-xl rounded-xl">
+    <h1 class="text-3xl font-bold text-indigo-800 mb-6 border-b-2 border-indigo-200 pb-2">Image Q&A Assistant</h1>
 
     <!-- Flash Messages -->
     {% with messages = get_flashed_messages(with_categories=true) %}
         {% if messages %}
             {% for category, message in messages %}
-                <div class="mt-6 p-4 rounded-lg shadow-md animate-slide-in-left {% if category == 'success' %}bg-green-50 border-l-4 border-green-500 text-green-800{% elif category == 'info' %}bg-blue-50 border-l-4 border-blue-500 text-blue-800{% elif category == 'warning' %}bg-yellow-50 border-l-4 border-yellow-500 text-yellow-800{% else %}bg-red-50 border-l-4 border-red-500 text-red-800{% endif %}" id="flash-{{ loop.index }}" role="alert" aria-live="polite">
+                <div class="mb-4 p-4 rounded-md shadow-sm transition-all duration-300 animate-fadeIn
+                    {% if category == 'success' %}bg-green-100 text-green-800 border-l-4 border-green-500
+                    {% elif category == 'error' %}bg-red-100 text-red-800 border-l-4 border-red-500
+                    {% elif category == 'warning' %}bg-yellow-100 text-yellow-800 border-l-4 border-yellow-500
+                    {% else %}bg-blue-100 text-blue-800 border-l-4 border-blue-500{% endif %}">
                     <div class="flex items-center">
-                        <div class="flex-shrink-0 mr-3">
-                            {% if category == 'success' %}
-                                <svg class="w-5 h-5 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                            {% elif category == 'info' %}
-                                <svg class="w-5 h-5 text-blue-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
-                            {% elif category == 'warning' %}
-                                <svg class="w-5 h-5 text-yellow-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                            {% else %}
-                                <svg class="w-5 h-5 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path></svg>
-                            {% endif %}
-                        </div>
-                        <p class="text-sm whitespace-pre-wrap">{{ message }}</p>
+                        <span class="mr-2">
+                            {% if category == 'success' %}✓
+                            {% elif category == 'error' %}✗
+                            {% elif category == 'warning' %}⚠
+                            {% else %}ℹ{% endif %}
+                        </span>
+                        {{ message }}
                     </div>
                 </div>
             {% endfor %}
         {% endif %}
     {% endwith %}
 
-    <div class="grid md:grid-cols-2 gap-6 sm:gap-8">
-        <!-- Image Upload Section -->
-        <div class="bg-gray-50 p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 transition-all duration-300 hover:shadow-lg">
-            <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 flex items-center" aria-label="Upload Images Section">
-                <svg class="w-5 h-5 mr-2 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                Upload Images
-            </h2>
-            <form method="POST" enctype="multipart/form-data" class="space-y-4" id="upload-form" aria-label="Image Upload Form">
-                <div class="relative border-2 border-dashed border-gray-300 rounded-lg p-4 sm:p-6 text-center hover:border-indigo-500 focus-within:ring-2 focus-within:ring-indigo-500 transition-all duration-200" id="upload-dropzone" tabindex="0" aria-label="Drag and drop or click to upload images">
-                    <input type="file" id="image_files" name="image_files" accept="image/png,image/jpeg,image/gif" multiple required
-                        class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" aria-label="Select images to upload" onchange="validateFiles(this)">
-                    <div class="space-y-2">
-                        <svg class="mx-auto h-10 sm:h-12 w-10 sm:w-12 text-gray-400" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                        </svg>
-                        <p class="text-xs sm:text-sm text-gray-600">Drag and drop or click to upload</p>
-                        <p class="text-xs text-gray-500">PNG, JPG, GIF (max {{ CONFIG.MAX_FILE_SIZE_MB }}MB each)</p>
-                        <div id="upload-progress" class="hidden w-full bg-gray-200 rounded-full h-2.5 mt-2" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            <div class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+    <!-- Main Content Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Left Column -->
+        <div class="space-y-6">
+            <!-- Image Upload Card -->
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clip-rule="evenodd" />
+                    </svg>
+                    Upload Image
+                </h2>
+                <form method="POST" enctype="multipart/form-data" class="mb-2">
+                    <div class="mb-4">
+                        <div class="border-2 border-dashed border-gray-300 rounded-lg p-4 text-center hover:border-indigo-400 transition-colors duration-300">
+                            <label for="image_files" class="block text-gray-700 font-medium mb-2 cursor-pointer">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 mx-auto text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <span class="mt-2 block">Click to select an image</span>
+                            </label>
+                            <input type="file" name="image_files" id="image_files" accept=".png,.jpg,.jpeg,.gif" class="hidden">
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2 flex items-center justify-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Max size: {{ CONFIG.MAX_FILE_SIZE_MB }}MB. Allowed: {{ CONFIG.ALLOWED_EXTENSIONS|join(', ') }}
+                        </p>
+                    </div>
+                    <button type="submit" class="w-full px-4 py-2 bg-gradient-to-r from-indigo-600 to-indigo-700 text-white rounded-md hover:from-indigo-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-opacity-50 transition duration-300 shadow-md">
+                        Upload & Process
+                    </button>
+                </form>
+            </div>
+            
+            <!-- Query Form -->
+            {% if uploaded_filename or conversation_history %}
+            <div class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 border border-gray-200">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                    </svg>
+                    {% if conversation_history %}
+                        Ask a Follow-up Question
+                    {% else %}
+                        Ask a Question
+                    {% endif %}
+                </h2>
+                <form method="POST" class="mb-2">
+                    <div class="mb-4">
+                        <div class="relative">
+                            <input type="text" name="user_question" id="user_question" 
+                                class="w-full p-3 pr-10 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" 
+                                placeholder="What would you like to know about the image?">
+                            <input type="hidden" name="query" value="true">
+                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                                </svg>
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div class="text-right space-x-2">
-                    <button type="submit" class="px-4 sm:px-5 py-2 bg-indigo-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 transition-all duration-200 transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none" aria-label="Upload selected images" id="upload-btn" disabled>Upload</button>
-                    {% if uploaded_files %}
-                    <button type="submit" name="clear" value="clear" class="px-4 sm:px-5 py-2 bg-red-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-red-700 focus:ring-4 focus:ring-red-300 transition-all duration-200 transform hover:scale-105" aria-label="Clear all uploaded images">Clear All</button>
-                    {% endif %}
-                </div>
-            </form>
-        </div>
-
-        <!-- Question Section -->
-        <div class="bg-gray-50 p-4 sm:p-6 rounded-lg shadow-md border border-gray-200 transition-all duration-300 hover:shadow-lg">
-            <h2 class="text-lg sm:text-xl font-semibold text-gray-800 mb-4 flex items-center" aria-label="Ask a Question Section">
-                <svg class="w-5 h-5 mr-2 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Ask a Question
-            </h2>
-            <form method="POST" class="space-y-4" id="query-form" aria-label="Query Form">
-                <div class="relative">
-                    <input type="text" id="user_question" name="user_question" placeholder="Ask about the images..." required list="query-history"
-                        class="block w-full text-sm text-gray-900 bg-white rounded-lg border border-gray-300 focus:ring-2 focus:ring-green-500 focus:border-green-500 p-3 sm:p-4 pr-10 transition-all duration-200 shadow-sm" aria-label="Enter your question" oninput="validateQuery(this)">
-                    <datalist id="query-history">
-                        {% for q in query_history %}
-                        <option value="{{ q.query }}">{{ q.query }}</option>
-                        {% endfor %}
-                    </datalist>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                        <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                    </div>
-                </div>
-                <div class="text-right">
-                    <button type="submit" name="query" value="query" 
-                        class="px-4 sm:px-5 py-2 bg-green-600 text-white text-sm font-medium rounded-lg shadow-md hover:bg-green-700 focus:ring-4 focus:ring-green-300 transition-all duration-200 transform hover:scale-105 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none {% if not uploaded_files %}disabled:bg-gray-400 disabled:cursor-not-allowed{% endif %}"
-                        {% if not uploaded_files %}disabled title="Upload an image first"{% endif %} aria-label="Submit query" id="query-btn">Ask Gemini</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Uploaded Files Section -->
-    {% if uploaded_files %}
-    <div class="mt-6 sm:mt-8 p-4 sm:p-5 bg-indigo-50 border border-indigo-200 rounded-lg shadow-md">
-        <h2 class="text-base sm:text-lg font-semibold text-indigo-800 mb-3 flex items-center" aria-label="Uploaded Images Section">
-            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-            Uploaded Images{% if upload_time %} <span class="text-xs sm:text-sm font-normal ml-2">(Processed in {{ upload_time|round(2) }}s)</span>{% endif %}
-        </h2>
-        <form method="POST" id="batch-delete-form" aria-label="Batch Delete Form">
-            <div class="flex justify-between items-center mb-3">
-                <label class="flex items-center space-x-2">
-                    <input type="checkbox" id="select-all" class="batch-select-all form-checkbox text-indigo-600" aria-label="Select all uploaded images">
-                    <span class="text-sm text-gray-700">Select All (<span id="selected-count">0</span>)</span>
-                </label>
-                <div class="space-x-2">
-                    <button type="button" id="delete-selected-btn" class="px-3 py-1 bg-red-600 text-white text-xs font-medium rounded-lg shadow-md hover:bg-red-700 focus:ring-2 focus:ring-red-300 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:shadow-none" disabled aria-label="Delete selected images">Delete Selected</button>
-                    <button type="submit" name="undo_delete" value="undo" class="px-3 py-1 bg-yellow-600 text-white text-xs font-medium rounded-lg shadow-md hover:bg-yellow-700 focus:ring-2 focus:ring-yellow-300" id="undo-btn" {% if not session.deleted_files %}hidden{% endif %} aria-label="Undo last deletion">Undo</button>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4" role="list" aria-label="List of uploaded images">
-                {% for file in uploaded_files %}
-                <div class="bg-white p-2 rounded-lg border border-gray-200 shadow-sm flex items-center justify-between hover:bg-gray-50 transition-all duration-200" role="listitem">
-                    <label class="flex items-center space-x-2 flex-grow mr-2">
-                        <input type="checkbox" name="delete_images" value="{{ file }}" class="batch-delete-checkbox form-checkbox text-indigo-600" aria-label="Select {{ file | basename }} for deletion">
-                        <img src="{{ file_data[file | basename]['metadata']['preview_url'] }}" alt="{{ file | basename }}" class="w-8 h-8 object-cover rounded-lg shadow-sm" loading="lazy">
-                        <p class="text-xs text-gray-700 truncate" title="{{ file | basename }}" data-tooltip="{{ file | basename }}">{{ file | basename }}</p>
-                    </label>
-                    <button type="submit" name="delete_image" value="{{ file }}" class="text-red-600 hover:text-red-800 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-300 transition-colors duration-200" title="Delete {{ file | basename }}" aria-label="Delete {{ file | basename }}">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                    <button type="submit" class="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-blue-600 text-white rounded-md hover:from-blue-600 hover:to-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 transition duration-300 shadow-md">
+                        Submit Question
                     </button>
-                </div>
-                {% endfor %}
-            </div>
-        </form>
-        <!-- Delete Confirmation Modal -->
-        <div id="delete-confirmation-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden" role="dialog" aria-modal="true" aria-labelledby="delete-modal-title" tabindex="-1">
-            <div class="bg-white p-6 rounded-lg shadow-xl max-w-sm w-full transform transition-all duration-300 scale-95" id="delete-modal-content">
-                <h3 id="delete-modal-title" class="text-lg font-semibold text-gray-800 mb-4">Confirm Deletion</h3>
-                <p class="text-sm text-gray-600 mb-4">Are you sure you want to move <span id="delete-count">0</span> selected images to trash? This can be undone within {{ CONFIG.TRASH_EXPIRY_SECONDS }} seconds.</p>
-                <div class="flex justify-end space-x-2">
-                    <button id="cancel-delete" class="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 focus:ring-2 focus:ring-gray-400 transition-all duration-200" aria-label="Cancel deletion">Cancel</button>
-                    <button id="confirm-delete" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:ring-2 focus:ring-red-400 transition-all duration-200" aria-label="Confirm deletion">Delete</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Answer Section with Confidence -->
-    {% if answer %}
-    <div class="mt-6 sm:mt-8 p-4 sm:p-6 bg-gradient-to-r from-green-50 to-indigo-50 border border-green-200 rounded-lg shadow-lg animate-fade-in-up">
-        <h2 class="text-lg sm:text-xl font-semibold text-green-800 mb-4 flex items-center" aria-label="Gemini's Answer Section">
-            <svg class="w-5 sm:w-6 h-5 sm:h-6 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            Gemini's Answer <span class="text-xs sm:text-sm font-normal ml-2">(Generated in {{ query_time|round(2) }}s)</span>
-        </h2>
-        <div class="bg-white p-3 sm:p-4 rounded-lg border border-gray-200 shadow-sm">
-            <p class="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed mb-4">{{ answer }}</p>
-            {% if confidence is defined %}
-            <div class="mb-4">
-                <p class="text-xs text-gray-600">Confidence: <span class="font-medium">{{ (confidence * 100)|round(2) }}%</span></p>
-                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden" role="progressbar" aria-valuenow="{{ (confidence * 100)|round }}" aria-valuemin="0" aria-valuemax="100">
-                    <div class="bg-gradient-to-r from-green-500 to-indigo-500 h-2.5 rounded-full transition-all duration-1000 ease-out" style="width: {{ (confidence * 100)|round }}%"></div>
-                </div>
-            </div>
-            {% endif %}
-            {% if metadata %}
-            <button class="text-indigo-600 hover:underline text-sm focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors duration-200" onclick="toggleModal('metadata-modal')" aria-label="View metadata of relevant images">View Source Metadata</button>
-            <div id="metadata-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden" role="dialog" aria-modal="true" aria-labelledby="metadata-modal-title" tabindex="-1">
-                <div class="bg-white p-6 rounded-lg shadow-xl max-w-lg w-full transform transition-all duration-300 scale-95">
-                    <h3 id="metadata-modal-title" class="text-lg font-semibold text-gray-800 mb-4">Source Metadata</h3>
-                    <ul class="text-sm text-gray-600 space-y-3 list-none pl-0" role="list">
-                        {% for filename, meta in metadata.items() %}
-                        <li class="border-b border-gray-200 pb-2" role="listitem">
-                            <span class="font-medium text-indigo-600">{{ filename }}</span>
-                            <div class="mt-1 text-xs">
-                                <p>Dimensions: {{ meta.dimensions }}</p>
-                                <p>Size: {{ meta.file_size_kb }} KB</p>
-                                <p>Uploaded: {{ meta.upload_time }}</p>
-                                <p>OCR Confidence: {{ meta.ocr_confidence }}</p>
-                            </div>
-                        </li>
-                        {% endfor %}
-                    </ul>
-                    <button class="mt-4 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-300 transition-all duration-200" onclick="toggleModal('metadata-modal')" aria-label="Close metadata modal">Close</button>
-                </div>
-            </div>
-            {% endif %}
-        </div>
-    </div>
-    {% endif %}
-
-    <!-- Query History Section -->
-    {% if query_history %}
-    <div class="mt-6 sm:mt-8 p-4 sm:p-5 bg-gray-100 border border-gray-200 rounded-lg shadow-md">
-        <h2 class="text-base sm:text-lg font-semibold text-gray-800 mb-3" aria-label="Recent Queries Section">Recent Queries</h2>
-        <ul class="text-sm text-gray-700 space-y-2" role="list" aria-label="List of recent queries">
-            {% for q in query_history %}
-            <li class="flex justify-between items-center hover:bg-gray-200 p-2 rounded-lg transition-all duration-200" role="listitem">
-                <form method="POST" class="flex-grow">
-                    <input type="hidden" name="user_question" value="{{ q.query }}">
-                    <button type="submit" name="query" value="query" class="text-indigo-600 hover:underline truncate focus:outline-none focus:ring-2 focus:ring-indigo-300 transition-colors duration-200" title="Re-run query: {{ q.query }}" aria-label="Re-run query: {{ q.query }}">{{ q.query }}</button>
                 </form>
-                <span class="text-xs text-gray-500 font-medium">({{ (q.confidence * 100)|round(2) }}%)</span>
-            </li>
-            {% endfor %}
-        </ul>
-    </div>
-    {% endif %}
+            </div>
+            {% endif %}
 
-    <!-- Session Expiry Warning -->
-    <div id="session-expiry-warning" class="fixed bottom-4 right-4 bg-yellow-100 border border-yellow-400 text-yellow-800 p-4 rounded-lg shadow-md hidden transform transition-all duration-300" role="alert" aria-live="polite">
-        <p class="text-sm">Session expires in <span id="expiry-timer" class="font-medium">{{ CONFIG.SESSION_EXPIRY_MINUTES }}</span> min. Activity resets the timer.</p>
-    </div>
+            <!-- Extracted Text Display -->
+            {% if extracted_text %}
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200 overflow-hidden">
+                <h2 class="text-xl font-semibold text-gray-800 mb-3 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
+                    </svg>
+                    Extracted Text
+                </h2>
+                <div class="text-xs text-gray-500 mb-2">From '{{ uploaded_filename }}'</div>
+                <div class="max-h-60 overflow-y-auto bg-gray-50 p-3 rounded border border-gray-200">
+                    <pre class="text-gray-700 whitespace-pre-wrap text-sm">{{ extracted_text }}</pre>
+                </div>
+            </div>
+            {% endif %}
+        </div>
 
-    <div class="mt-8 sm:mt-10 text-center text-xs text-gray-500">
-        <p>Powered by Gemini AI - Enhanced Visual Q&A</p>
+        <!-- Right Column -->
+        <div class="space-y-6">
+            <!-- Latest Answer Display -->
+            {% if answer and (not conversation_history or conversation_history[-1].answer != answer) %}
+            <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 animate-fadeIn">
+                <h2 class="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-green-600" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" />
+                    </svg>
+                    Answer
+                </h2>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <p class="text-gray-700">{{ answer }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Conversation History Display -->
+            {% if conversation_history %}
+            <div class="bg-white p-6 rounded-lg shadow-md border border-gray-200">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-semibold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2 text-indigo-600" viewBox="0 0 20 20" fill="currentColor">
+                            <path d="M2 5a2 2 0 012-2h7a2 2 0 012 2v4a2 2 0 01-2 2H9l-3 3v-3H4a2 2 0 01-2-2V5z" />
+                            <path d="M15 7v2a4 4 0 01-4 4H9.828l-1.766 1.767c.28.149.599.233.938.233h2l3 3v-3h2a2 2 0 002-2V9a2 2 0 00-2-2h-1z" />
+                        </svg>
+                        Conversation History
+                        <span class="ml-2 text-sm text-gray-500">(Click to expand/collapse)</span>
+                    </h2>
+                    
+                    <!-- Delete History Button -->
+                    <form method="POST" action="{{ url_for('gemini_image_text_ext_qa.delete_history') }}" onsubmit="return confirm('Are you sure you want to clear all conversation history and data?');">
+                        <button type="submit" class="flex items-center px-3 py-1 bg-red-500 text-white text-sm rounded hover:bg-red-600 transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-50">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v6a1 1 0 102 0V8a1 1 0 00-1-1z" clip-rule="evenodd" />
+                            </svg>
+                            Clear History
+                        </button>
+                    </form>
+                </div>
+                
+                <div class="space-y-4 overflow-y-auto max-h-96" id="conversation-container">
+                    {% for qa in conversation_history %}
+                        <div class="conversation-item rounded-lg overflow-hidden shadow-sm transition-all duration-200 hover:shadow-md {% if not loop.last %}collapsed{% endif %}" data-index="{{ loop.index0 }}">
+                            <!-- Question (Always visible) -->
+                            <div class="conversation-header bg-indigo-50 p-3 border-l-4 border-indigo-400 cursor-pointer">
+                                <p class="font-medium text-indigo-900 flex items-start">
+                                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-indigo-500 text-white text-xs mr-2 flex-shrink-0">Q</span>
+                                    {{ qa.question }}
+                                    <span class="ml-auto toggle-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-indigo-700 transform transition-transform duration-200 {% if not loop.last %}rotate-180{% endif %}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                                        </svg>
+                                    </span>
+                                </p>
+                            </div>
+                            <!-- Answer (Collapsible) -->
+                            <div class="conversation-body bg-white p-3 border-l-4 border-green-400 {% if not loop.last %}hidden{% endif %}">
+                                <p class="text-gray-700 flex items-start">
+                                    <span class="inline-flex items-center justify-center h-6 w-6 rounded-full bg-green-500 text-white text-xs mr-2 flex-shrink-0">A</span>
+                                    {{ qa.answer }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 
-<script>
-    // Utility Functions
-    const debounce = (func, wait) => {
-        let timeout;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
-    };
-
-    const toggleModal = (modalId) => {
-        const modal = document.getElementById(modalId);
-        const content = modal.querySelector('.transform');
-        modal.classList.toggle('hidden');
-        if (!modal.classList.contains('hidden')) {
-            content.classList.remove('scale-95');
-            content.classList.add('scale-100');
-            modal.focus();
-        } else {
-            content.classList.remove('scale-100');
-            content.classList.add('scale-95');
-        }
-    };
-
-    // File Validation and Upload
-    const validateFiles = (input) => {
-        const uploadBtn = document.getElementById('upload-btn');
-        const dropzone = document.getElementById('upload-dropzone');
-        const maxSizeMB = {{ CONFIG.MAX_FILE_SIZE_MB }};
-        let valid = true;
-        const fileInfo = dropzone.querySelector('.file-info') || document.createElement('div');
-        fileInfo.className = 'file-info mt-2 text-sm transition-opacity duration-200';
-
-        if (input.files.length > 0) {
-            const fileCountText = `${input.files.length} file${input.files.length > 1 ? 's' : ''} selected`;
-            Array.from(input.files).forEach(file => {
-                if (file.size > maxSizeMB * 1024 * 1024) {
-                    valid = false;
-                    fileInfo.textContent = `Error: ${file.name} exceeds ${maxSizeMB}MB`;
-                    fileInfo.className = 'file-info mt-2 text-sm text-red-600';
-                }
-            });
-            if (valid) {
-                fileInfo.textContent = fileCountText;
-                fileInfo.className = 'file-info mt-2 text-sm text-indigo-600';
-            }
-            dropzone.querySelector('.file-info')?.remove();
-            dropzone.appendChild(fileInfo);
-            dropzone.classList.add('border-indigo-500', 'bg-indigo-50');
-        } else {
-            dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-        }
-        uploadBtn.disabled = !valid || input.files.length === 0;
-    };
-
-    const uploadForm = document.getElementById('upload-form');
-    const uploadDropzone = document.getElementById('upload-dropzone');
-    const fileInput = document.getElementById('image_files');
-    const uploadProgress = document.getElementById('upload-progress');
-
-    uploadForm.addEventListener('submit', (e) => {
-        if (!document.getElementById('upload-btn').disabled) {
-            uploadProgress.classList.remove('hidden');
-            let progress = 0;
-            const interval = setInterval(() => {
-                progress += Math.random() * 20;
-                if (progress > 100) progress = 100;
-                uploadProgress.querySelector('div').style.width = `${progress}%`;
-                uploadProgress.setAttribute('aria-valuenow', Math.round(progress));
-                if (progress >= 100) clearInterval(interval);
-            }, 100);
-        }
-    });
-
-    fileInput.addEventListener('change', debounce(() => validateFiles(fileInput), 200));
-
-    uploadDropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        uploadDropzone.classList.add('border-indigo-500', 'bg-indigo-50');
-    });
-
-    uploadDropzone.addEventListener('dragleave', () => {
-        uploadDropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-    });
-
-    uploadDropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        fileInput.files = e.dataTransfer.files;
-        fileInput.dispatchEvent(new Event('change'));
-    });
-
-    // Query Validation and Submission
-    const validateQuery = (input) => {
-        const queryBtn = document.getElementById('query-btn');
-        queryBtn.disabled = !input.value.trim();
-    };
-
-    const queryForm = document.getElementById('query-form');
-    queryForm.addEventListener('submit', (e) => {
-        if (!queryForm.querySelector('button[type="submit"]').disabled) {
-            const flashContainer = document.createElement('div');
-            flashContainer.className = 'mt-6 p-4 rounded-lg shadow-md animate-slide-in-left bg-blue-50 border-l-4 border-blue-500 text-blue-800';
-            flashContainer.innerHTML = `
-                <div class="flex items-center">
-                    <div class="flex-shrink-0 mr-3">
-                        <svg class="animate-spin h-5 w-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" aria-hidden="true">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                    </div>
-                    <p class="text-sm">Gemini is processing your question...</p>
-                </div>`;
-            document.querySelector('.container').insertBefore(flashContainer, queryForm.closest('.grid').nextSibling);
-        }
-    });
-
-    document.getElementById('user_question')?.addEventListener('input', debounce((e) => validateQuery(e.target), 200));
-
-    // Batch Delete Functionality
-    const checkboxes = document.querySelectorAll('.batch-delete-checkbox');
-    const selectAll = document.getElementById('select-all');
-    const batchDeleteBtn = document.getElementById('delete-selected-btn');
-    const deleteModal = document.getElementById('delete-confirmation-modal');
-    const confirmDelete = document.getElementById('confirm-delete');
-    const cancelDelete = document.getElementById('cancel-delete');
-    const batchForm = document.getElementById('batch-delete-form');
-    const undoBtn = document.getElementById('undo-btn');
-    const selectedCount = document.getElementById('selected-count');
-    const deleteCount = document.getElementById('delete-count');
-
-    const updateDeleteButton = () => {
-        const checkedCount = document.querySelectorAll('.batch-delete-checkbox:checked').length;
-        selectedCount.textContent = checkedCount;
-        batchDeleteBtn.disabled = checkedCount === 0;
-        deleteCount.textContent = checkedCount;
-    };
-
-    checkboxes.forEach(cb => cb.addEventListener('change', updateDeleteButton));
-    selectAll.addEventListener('change', () => {
-        checkboxes.forEach(cb => cb.checked = selectAll.checked);
-        updateDeleteButton();
-    });
-
-    batchDeleteBtn.addEventListener('click', () => {
-        if (!batchDeleteBtn.disabled) toggleModal('delete-confirmation-modal');
-    });
-
-    cancelDelete.addEventListener('click', () => toggleModal('delete-confirmation-modal'));
-    confirmDelete.addEventListener('click', () => {
-        batchForm.action = "{{ url_for('gemini_image_text_ext_qa.gemini_image_text_ext_qa_handler') }}";
-        batchForm.querySelector('input[name="delete_selected"]')?.remove();
-        const deleteSelectedInput = document.createElement('input');
-        deleteSelectedInput.type = 'hidden';
-        deleteSelectedInput.name = 'delete_selected';
-        deleteSelectedInput.value = 'delete_selected';
-        batchForm.appendChild(deleteSelectedInput);
-        batchForm.submit();
-    });
-
-    if (undoBtn && !undoBtn.hidden) {
-        setTimeout(() => {
-            undoBtn.classList.add('opacity-0');
-            setTimeout(() => undoBtn.hidden = true, 300);
-        }, {{ CONFIG.TRASH_EXPIRY_SECONDS * 1000 }});
-    }
-
-    // Session Expiry Warning
-    const sessionExpiryWarning = document.getElementById('session-expiry-warning');
-    const expiryTimer = document.getElementById('expiry-timer');
-    let timeLeft = {{ CONFIG.SESSION_EXPIRY_MINUTES * 60 }};
-    const warningThreshold = 300;
-
-    const updateExpiryTimer = () => {
-        const minutesLeft = Math.floor(timeLeft / 60);
-        const secondsLeft = timeLeft % 60;
-        expiryTimer.textContent = `${minutesLeft}:${secondsLeft < 10 ? '0' : ''}${secondsLeft}`;
-        sessionExpiryWarning.classList.toggle('hidden', timeLeft > warningThreshold);
-        if (timeLeft <= warningThreshold && !sessionExpiryWarning.classList.contains('scale-100')) {
-            sessionExpiryWarning.classList.add('scale-100');
-            sessionExpiryWarning.classList.remove('scale-95');
-        }
-        timeLeft--;
-        if (timeLeft < 0) {
-            clearInterval(timer);
-            window.location.reload();
-        }
-    };
-
-    const timer = setInterval(updateExpiryTimer, 1000);
-    const resetTimer = debounce(() => timeLeft = {{ CONFIG.SESSION_EXPIRY_MINUTES * 60 }}, 500);
-    document.addEventListener('mousemove', resetTimer);
-    document.addEventListener('keypress', resetTimer);
-
-    // Flash Message Auto-Dismiss
-    document.querySelectorAll('[id^="flash-"]').forEach(flash => {
-        setTimeout(() => {
-            flash.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-            setTimeout(() => flash.remove(), 500);
-        }, 8000);
-    });
-
-    // Modal Keyboard Navigation
-    [deleteModal, document.getElementById('metadata-modal')].forEach(modal => {
-        if (modal) {
-            modal.addEventListener('keydown', (e) => {
-                if (e.key === 'Escape' && !modal.classList.contains('hidden')) toggleModal(modal.id);
-                if (e.key === 'Tab') {
-                    const focusable = modal.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-                    const first = focusable[0];
-                    const last = focusable[focusable.length - 1];
-                    if (e.shiftKey && document.activeElement === first) {
-                        e.preventDefault();
-                        last.focus();
-                    } else if (!e.shiftKey && document.activeElement === last) {
-                        e.preventDefault();
-                        first.focus();
-                    }
-                }
-            });
-        }
-    });
-
-    // Tooltips
-    document.querySelectorAll('[data-tooltip]').forEach(el => {
-        const tooltip = document.createElement('div');
-        tooltip.className = 'absolute bg-gray-800 text-white text-xs rounded py-1 px-2 -top-8 left-1/2 transform -translate-x-1/2 opacity-0 transition-opacity duration-200 pointer-events-none';
-        tooltip.textContent = el.dataset.tooltip;
-        el.classList.add('relative');
-        el.appendChild(tooltip);
-        el.addEventListener('mouseenter', () => tooltip.classList.remove('opacity-0'));
-        el.addEventListener('mouseleave', () => tooltip.classList.add('opacity-0'));
-    });
-</script>
-
+<!-- Custom styles and JavaScript -->
 <style>
-    @keyframes fade-in-down { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fade-in-up { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes slide-in-left { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
-    .animate-fade-in-down { animation: fade-in-down 0.5s ease-out; }
-    .animate-fade-in-up { animation: fade-in-up 0.5s ease-out; }
-    .animate-slide-in-left { animation: slide-in-left 0.5s ease-out; }
-    .whitespace-pre-wrap { white-space: pre-wrap; }
-    .animate-spin { animation: spin 1s linear infinite; }
-    @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-    .form-checkbox:focus { outline: none; ring: 2px solid #4f46e5; }
-    .scale-95 { transform: scale(0.95); }
-    .scale-100 { transform: scale(1); }
-    @media (max-width: 640px) {
-        .container { padding: 1rem; max-width: 100%; }
-        .md\:grid-cols-2, .md\:grid-cols-3 { grid-template-columns: 1fr; }
-        .sm\:p-6 { padding: 1rem; }
-        .text-lg { font-size: 1.125rem; }
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
     }
-    @media (max-width: 768px) {
-        .md\:grid-cols-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .animate-fadeIn {
+        animation: fadeIn 0.3s ease-out forwards;
+    }
+    .conversation-item.collapsed .toggle-icon svg {
+        transform: rotate(180deg);
+    }
+    .conversation-item:not(.collapsed) .toggle-icon svg {
+        transform: rotate(0deg);
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get all conversation headers
+        const conversationHeaders = document.querySelectorAll('.conversation-header');
+        
+        // Add click event listeners to each header
+        conversationHeaders.forEach(header => {
+            header.addEventListener('click', function() {
+                const conversationItem = this.closest('.conversation-item');
+                const conversationBody = conversationItem.querySelector('.conversation-body');
+                
+                // Toggle collapsed class
+                conversationItem.classList.toggle('collapsed');
+                
+                // Toggle visibility of the answer
+                if (conversationBody.classList.contains('hidden')) {
+                    conversationBody.classList.remove('hidden');
+                    setTimeout(() => {
+                        conversationBody.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    }, 100);
+                } else {
+                    conversationBody.classList.add('hidden');
+                }
+            });
+        });
+        
+        // If there's a new answer, scroll to it
+        const latestAnswer = document.querySelector('.animate-fadeIn');
+        if (latestAnswer) {
+            setTimeout(() => {
+                latestAnswer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 300);
+        }
+        
+        // Expand the latest question-answer pair by default
+        const conversationItems = document.querySelectorAll('.conversation-item');
+        if (conversationItems.length > 0) {
+            const latestItem = conversationItems[conversationItems.length - 1];
+            if (latestItem.classList.contains('collapsed')) {
+                latestItem.classList.remove('collapsed');
+                const latestBody = latestItem.querySelector('.conversation-body');
+                if (latestBody.classList.contains('hidden')) {
+                    latestBody.classList.remove('hidden');
+                }
+            }
+        }
+    });
+</script>
 {% endblock %}
