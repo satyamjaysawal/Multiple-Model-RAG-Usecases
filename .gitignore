@@ -1,0 +1,64 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environment
+venv/
+env/
+
+# Environment variables and credentials
+*.env
+.env.*
+config.py
+
+# Logs
+logs/
+*.log
+*.out
+*.err
+nohup.out
+
+# Database files
+*.sqlite3
+*.db
+instance/
+
+# Cache and temporary files
+*.cache
+*.pid
+*.swp
+*.swo
+*.swn
+*.swo
+*.bak
+
+# Flask and Gunicorn specific
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# VS Code settings
+.vscode/
+
+# PyCharm settings
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Docker related
+docker-compose.override.yml
+
+# Node.js dependencies (if applicable)
+node_modules/
+
+# Static assets (optional, if generated)
+staticfiles/
