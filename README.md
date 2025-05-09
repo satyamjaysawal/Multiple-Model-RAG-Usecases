@@ -1,7 +1,6 @@
 
 
 
-Great! If you’ve **cloned a Flask project from GitHub** and want to **run it in VS Code**, follow these steps:
 
 ---
 
