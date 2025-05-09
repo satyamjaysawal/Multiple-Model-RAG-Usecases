@@ -54,8 +54,11 @@ pip install -r requirements.txt
 In the project root, create a file named `.env` with:
 
 ```env
-FLASK_APP=app.py
-FLASK_ENV=development
+GOOGLE_API_KEY=
+FLASK_SECRET_KEY=
+MONGO_URI=
+QDRANT_URL=
+QDRANT_API_KEY=
 ```
 
 > Replace `app.py` with the actual entry point of your app (e.g., `run.py`, or a package name).
