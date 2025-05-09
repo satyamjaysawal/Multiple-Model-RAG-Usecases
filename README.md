@@ -11,7 +11,7 @@
 In the terminal:
 
 ```bash
-git clone https://github.com/username/project-name.git
+git clone https://github.com/satyamjaysawal/Multiple-Model-RAG-Usecases.git
 cd project-name
 ```
 
