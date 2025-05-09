@@ -12,7 +12,7 @@ In the terminal:
 
 ```bash
 git clone https://github.com/satyamjaysawal/Multiple-Model-RAG-Usecases.git
-cd project-name
+cd Multiple-Model-RAG-Usecases
 ```
 
 > Replace the URL with your actual GitHub repo link.
