@@ -16,33 +16,26 @@ cd project-name
 ```
 
 > Replace the URL with your actual GitHub repo link.
-
 ---
 
 ### **2. Open the Project in VS Code**
-
-In terminal:
 
 ```bash
 code .
 ```
 
-Or launch VS Code and open the folder manually.
-
 ---
 
 ### **3. Create and Activate a Virtual Environment**
-
-If the repo doesn’t already include a virtual environment:
 
 ```bash
 # Create
 python -m venv venv
 
 # Activate
-# On Windows:
+# Windows:
 venv\Scripts\activate
-# On macOS/Linux:
+# macOS/Linux:
 source venv/bin/activate
 ```
 
@@ -50,32 +43,30 @@ source venv/bin/activate
 
 ### **4. Install Dependencies**
 
-If there is a `requirements.txt` file:
-
 ```bash
 pip install -r requirements.txt
 ```
 
 ---
 
-### **5. Set the FLASK\_APP Environment Variable**
+### **5. Create a `.env` File (Optional but Recommended)**
 
-Depending on the entry file (often `app.py`, `run.py`, or `wsgi.py`):
+In the project root, create a file named `.env` with:
 
-```bash
-# Windows:
-set FLASK_APP=app.py
-# macOS/Linux:
-export FLASK_APP=app.py
+```env
+FLASK_APP=app.py
+FLASK_ENV=development
 ```
 
-If the app folder structure is more complex (like `project_name/__init__.py`), set:
+> Replace `app.py` with the actual entry point of your app (e.g., `run.py`, or a package name).
+
+To use `.env` files automatically, install **`python-dotenv`** (if not already in requirements):
 
 ```bash
-set FLASK_APP=project_name
-# or
-export FLASK_APP=project_name
+pip install python-dotenv
 ```
+
+Flask will automatically read the `.env` file if `python-dotenv` is installed and you're using the Flask CLI.
 
 ---
 
@@ -85,18 +76,14 @@ export FLASK_APP=project_name
 flask run
 ```
 
-You should see output like:
-
-```bash
- * Running on http://127.0.0.1:10000/
-```
-
 ---
 
 ### **7. Open in Browser**
 
-Visit:
-📍 `http://127.0.0.1:10000/`
+Go to:
+📍 `http://127.0.0.1:5000/`
+
+
 
 
 
