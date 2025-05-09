@@ -2,11 +2,11 @@ import os
 from flask import Blueprint, request, render_template, flash, session, redirect, url_for
 from werkzeug.utils import secure_filename
 import fitz  # PyMuPDF
-import google.generativeai as genai
+import google.generativeai as genai # type: ignore
 import easyocr
 from dotenv import load_dotenv
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
+from qdrant_client import QdrantClient # type: ignore
+from qdrant_client.http import models # type: ignore
 import uuid
 import io
 from PIL import Image
