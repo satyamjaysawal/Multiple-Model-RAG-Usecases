@@ -1,10 +1,10 @@
 import os
 import uuid
 from flask import Blueprint, request, render_template, flash, session, redirect, url_for
-from qdrant_client import QdrantClient
-from qdrant_client.http.models import Distance, VectorParams, PointStruct
-import google.generativeai as genai
-import easyocr
+from qdrant_client import QdrantClient # type: ignore
+from qdrant_client.http.models import Distance, VectorParams, PointStruct # type: ignore
+import google.generativeai as genai # type: ignore
+import easyocr # type: ignore
 from dotenv import load_dotenv
 from concurrent.futures import ThreadPoolExecutor
 from werkzeug.utils import secure_filename
