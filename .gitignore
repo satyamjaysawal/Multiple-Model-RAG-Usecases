@@ -1,31 +1,84 @@
-# Python bytecode and cache
-__pycache__/
-*.py[cod]
-*$py.class
-*.pyo
-*.pyd
-*.pyc
-*.pyd
+# Byte-compiled / optimized / DLL files
 
-# Python cache folders (safe redundancy)
-**/__pycache__/
-*.cache/
-.cache/
+**pycache**/
+\*.py\[cod]
+\*\$py.class
 
-# Pipenv/Python envs
+# Virtual environment
+
 venv/
 env/
-.venv/
-.env/
+
+# Environment variables and credentials
+
+*.env
+.env.*
+config.py
+
+.env
+
+/cache
+
+# Logs
+
+logs/
+\*.log
+\*.out
+\*.err
+nohup.out
+
+# Database files
+
+\*.sqlite3
+\*.db
+instance/
 
 # Cache and temporary files
-*.pid
-*.swp
-*.swo
-*.swn
-*.bak
-*.tmp
-tmp/
-temp/
-.cache/
-**/.cache/
+
+\*.cache
+\*.pid
+\*.swp
+\*.swo
+\*.swn
+\*.swo
+\*.bak
+
+# Flask and Gunicorn specific
+
+\*.pyc
+\*.pyo
+\*.pyd
+\*.egg-info/
+dist/
+build/
+\*.egg
+
+# Jupyter Notebook checkpoints
+
+.ipynb\_checkpoints/
+
+# VS Code settings
+
+.vscode/
+
+# PyCharm settings
+
+.idea/
+
+# macOS system files
+
+.DS\_Store
+
+# Docker related
+
+docker-compose.override.yml
+
+# Node.js dependencies (if applicable)
+
+node\_modules/
+
+# Static assets (optional, if generated)
+
+staticfiles/
+
+\--git pr cache folder ya cache nhi jana cahiye
