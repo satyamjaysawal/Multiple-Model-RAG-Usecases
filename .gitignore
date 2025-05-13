@@ -12,6 +12,7 @@ env/
 .env.*
 config.py
 
+.env
 # Logs
 logs/
 *.log
