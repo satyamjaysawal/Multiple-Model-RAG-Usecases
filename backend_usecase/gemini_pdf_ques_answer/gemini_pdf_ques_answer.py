@@ -3,9 +3,9 @@ import tempfile
 from flask import Blueprint, request, render_template, flash, session, redirect, url_for
 from werkzeug.utils import secure_filename
 from werkzeug.exceptions import RequestEntityTooLarge
-import fitz  # PyMuPDF
+import fitz  # type: ignore # PyMuPDF
 import google.generativeai as genai  # type: ignore
-import easyocr
+import easyocr # type: ignore
 from dotenv import load_dotenv
 from qdrant_client import QdrantClient  # type: ignore
 from qdrant_client.http import models  # type: ignore
