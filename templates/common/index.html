@@ -40,7 +40,7 @@
 
 <!-- Main Content -->
 <div class="container mx-auto px-6 pb-16 -mt-6 relative z-20">
-  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
     <!-- Card 1: Start Chatting -->
     <div class="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group">
       <div class="h-36 bg-gradient-to-r from-blue-600 to-indigo-600 relative overflow-hidden">
@@ -132,13 +132,45 @@
            class="group inline-flex items-center justify-center w-full px-6 py-3 bg-green-600 text-white font-medium rounded-xl hover:bg-green-700 transition duration-300 text-center shadow-md hover:shadow-lg">
           Analyze Images
           <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.422L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
+          </svg>
+        </a>
+      </div>
+    </div>
+
+    <!-- Card 4: Q&A with Scraped URL -->
+    <div class="bg-white rounded-2xl overflow-hidden shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 border border-gray-100 group">
+      <div class="h-36 bg-gradient-to-r from-yellow-500 to-orange-500 relative overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-10 group-hover:opacity-0 transition-opacity duration-300"></div>
+        <div class="absolute -bottom-6 -right-6 w-32 h-32 bg-white/10 rounded-full"></div>
+        <div class="absolute -top-6 -left-6 w-24 h-24 bg-white/10 rounded-full"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-16 w-16 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" />
+          </svg>
+        </div>
+      </div>
+      <div class="p-8">
+        <div class="flex items-center mb-4">
+          <div class="w-10 h-10 rounded-full flex items-center justify-center bg-yellow-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-600" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M4.083 9h1.946c.089-1.546.383-2.97.837-4.118A6.004 6.004 0 004.083 9zM10 2a8 8 0 100 16 8 8 0 000-16zm0 2c-.076 0-.232.032-.465.262-.238.234-.497.623-.737 1.182-.389.907-.673 2.142-.766 3.556h3.936c-.093-1.414-.377-2.649-.766-3.556-.24-.56-.5-.948-.737-1.182C10.232 4.032 10.076 4 10 4zm3.971 5c-.089-1.546-.383-2.97-.837-4.118A6.004 6.004 0 0115.917 9h-1.946zm-2.522 2H8.552c.098 1.405.387 2.636.771 3.53.238.558.498.947.737 1.182.233.23.389.262.465.262.076 0 .232-.032.465-.262.238-.235.498-.623.737-1.182.384-.894.673-2.125.771-3.53zm1.946 0c.089 1.546.383 2.97.837 4.118A6.004 6.004 0 0115.917 11h-1.946z" clip-rule="evenodd" />
+            </svg>
+          </div>
+          <h2 class="text-2xl font-bold text-gray-800 ml-3">Q&A with Scraped URL</h2>
+        </div>
+        <p class="text-gray-600 mb-6">Enter a URL, scrape its text content, and let Gemini AI answer questions based on the extracted text.</p>
+        <a href="/gemini_url_scrap_qa/gemini_url_scrap_qa_generate" 
+           class="group inline-flex items-center justify-center w-full px-6 py-3 bg-yellow-600 text-white font-medium rounded-xl hover:bg-yellow-700 transition duration-300 text-center shadow-md hover:shadow-lg">
+          Explore
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 transform group-hover:translate-x-1 transition-transform duration-200" viewBox="0 0 20 20" fill="currentColor">
             <path fill-rule="evenodd" d="M10.293 5.293a1 1 0 011.414 0l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414-1.414L12.586 11H5a1 1 0 110-2h7.586l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd" />
           </svg>
         </a>
       </div>
     </div>
   </div>
-  
+
   <!-- Features Section -->
   <div class="mt-16">
     <div class="text-center mb-12">
@@ -184,7 +216,7 @@
       <div class="bg-white p-6 rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100">
         <div class="w-12 h-12 rounded-lg bg-yellow-100 flex items-center justify-center mb-6">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-yellow-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" />
           </svg>
         </div>
         <h3 class="text-lg font-semibold text-gray-800 mb-2">Highly Customizable</h3>
