@@ -2,9 +2,9 @@ import os
 import requests
 from flask import Blueprint, request, render_template, flash, session, redirect, url_for
 from bs4 import BeautifulSoup
-from qdrant_client import QdrantClient
-from qdrant_client.http import models
-import google.generativeai as genai
+from qdrant_client import QdrantClient # type: ignore
+from qdrant_client.http import models # type: ignore
+import google.generativeai as genai # type: ignore
 from dotenv import load_dotenv
 import uuid
 import re
