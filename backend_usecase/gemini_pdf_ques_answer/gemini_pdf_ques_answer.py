@@ -1,12 +1,14 @@
 import os
+import tempfile
 from flask import Blueprint, request, render_template, flash, session, redirect, url_for
 from werkzeug.utils import secure_filename
+from werkzeug.exceptions import RequestEntityTooLarge
 import fitz  # PyMuPDF
-import google.generativeai as genai # type: ignore
+import google.generativeai as genai  # type: ignore
 import easyocr
 from dotenv import load_dotenv
-from qdrant_client import QdrantClient # type: ignore
-from qdrant_client.http import models # type: ignore
+from qdrant_client import QdrantClient  # type: ignore
+from qdrant_client.http import models  # type: ignore
 import uuid
 import io
 from PIL import Image
@@ -46,6 +48,7 @@ generation_model = genai.GenerativeModel("gemini-2.0-flash-exp")
 
 # Configuration
 MAX_CONVERSATION_HISTORY = 5  # Limit for Q&A pairs in history
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50MB
 
 # Initialize Qdrant collection only once at startup
 def initialize_qdrant_collection():
@@ -117,7 +120,7 @@ def get_relevant_chunks_and_full_text(query, top_k=5):
     try:
         response = genai.embed_content(model=embedding_model, content=query)
         if 'embedding' not in response:
-            raise ValueError("Embedding generation failed for query")
+            response = genai.embed_content(model=embedding_model, content=query)
         query_embedding = response['embedding']
 
         search_result = qdrant_client.search(
@@ -159,6 +162,12 @@ def format_conversation_history():
         formatted += f"A{i+1}: {qa['answer']}\n\n"
     return formatted
 
+# Error handler for file size limit
+@gemini_pdf_ques_answer.errorhandler(RequestEntityTooLarge)
+def handle_file_too_large(error):
+    flash("File is too large. Maximum allowed size is 50MB.", 'error')
+    return redirect(url_for('gemini_pdf_ques_answer.gemini_pdf_ques_answer_generate'))
+
 @gemini_pdf_ques_answer.route('/gemini_pdf_ques_answer_generate', methods=['GET', 'POST'])
 def gemini_pdf_ques_answer_generate():
     answer = None
@@ -180,13 +189,31 @@ def gemini_pdf_ques_answer_generate():
                 return render_template('usecase/gemini_pdf_ques_answer/gemini_pdf_ques_answer.html',
                                        conversation_history=conversation_history)
 
-            pdf_stream = pdf_file.read()
             try:
+                # Save file to a temporary location
+                with tempfile.NamedTemporaryFile(delete=False, suffix='.pdf') as temp_file:
+                    pdf_file.save(temp_file.name)
+                    temp_file_path = temp_file.name
+
+                # Process the PDF from disk
+                with open(temp_file_path, 'rb') as f:
+                    pdf_stream = f.read()
+
+                if not pdf_stream:
+                    flash("Uploaded file is empty.", 'error')
+                    os.unlink(temp_file_path)
+                    return render_template('usecase/gemini_pdf_ques_answer/gemini_pdf_ques_answer.html',
+                                           conversation_history=conversation_history)
+
                 text, pdf_type = extract_text_from_pdf(pdf_stream, filename)
                 if not text:
                     flash("No text extracted from the PDF.", 'warning')
+                    os.unlink(temp_file_path)
                     return render_template('usecase/gemini_pdf_ques_answer/gemini_pdf_ques_answer.html',
                                            conversation_history=conversation_history)
+
+                # Clean up temporary file
+                os.unlink(temp_file_path)
 
                 session['conversation_history'] = []
                 session['uploaded_filename'] = filename
@@ -204,8 +231,12 @@ def gemini_pdf_ques_answer_generate():
                 flash(f"PDF '{filename}' processed successfully! Type: {pdf_type}", 'success')
             except ValueError as ve:
                 flash(str(ve), 'error')
+                if 'temp_file_path' in locals():
+                    os.unlink(temp_file_path)
             except Exception as e:
                 flash(f"Failed to process PDF: {str(e)}", 'error')
+                if 'temp_file_path' in locals():
+                    os.unlink(temp_file_path)
 
         elif 'query' in request.form:
             user_question = request.form.get('user_question')
