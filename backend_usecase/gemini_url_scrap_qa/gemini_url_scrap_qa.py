@@ -257,16 +257,40 @@ def gemini_url_scrap_qa_generate():
                     else:
                         context = full_text
                         conversation_context = format_conversation_history()
-                        prompt = (
-                            "You are an advanced language model assistant trained to interpret and extract meaning from raw webpage content. "
-                            "Your task is to read the provided scraped text and answer the user's question based **only** on that content. "
-                            "Follow these rules strictly:\n"
-                            "1. Base your answer solely on the scraped text. Do not rely on prior knowledge or make assumptions.\n"
-                            "2. If the question cannot be fully answered with the available information, explicitly state that and explain why.\n"
-                            "3. Focus on clarity, factual accuracy, and conciseness. Avoid unnecessary elaboration.\n"
-                            "4. If helpful, summarize relevant parts of the scraped content before answering.\n"
-                            "5. Use a neutral and informative tone.\n\n"
+                        # prompt = (
+                        #     "You are an advanced language model assistant trained to interpret and extract meaning from raw webpage content. "
+                        #     "Your task is to read the provided scraped text and answer the user's question based **only** on that content. "
+                        #     "Follow these rules strictly:\n"
+                        #     "1. Base your answer solely on the scraped text. Do not rely on prior knowledge or make assumptions.\n"
+                        #     "2. If the question cannot be fully answered with the available information, explicitly state that and explain why.\n"
+                        #     "3. Focus on clarity, factual accuracy, and conciseness. Avoid unnecessary elaboration.\n"
+                        #     "4. If helpful, summarize relevant parts of the scraped content before answering.\n"
+                        #     "5. Use a neutral and informative tone.\n\n"
                             
+                        #     "=== Scraped Webpage Content ===\n"
+                        #     f"{context}\n\n"
+
+                        #     "=== Conversation History (if applicable) ===\n"
+                        #     f"{conversation_context if conversation_context.strip() else '[No prior conversation context provided]'}\n\n"
+
+                        #     "=== User Question ===\n"
+                        #     f"{user_question}\n\n"
+
+                        #     "=== Answer ===\n"
+                        # )
+
+                        prompt = (
+                            "You are an advanced language model assistant trained to extract, interpret, and summarize information from raw webpage content. "
+                            "Your task is to read the provided scraped text and respond to the user's question with the most relevant, accurate, and complete information available in the content. "
+                            "If the exact answer is not present, perform a similarity search within the scraped content to find related or similar information that could help answer the question. "
+                            "Follow these strict rules:\n"
+                            "1. Base your answer solely on the scraped text. Do not use external knowledge or assumptions.\n"
+                            "2. If the question cannot be fully answered with the provided information, clearly state that and explain why.\n"
+                            "3. Search for and highlight related or similar concepts in the scraped text that could help answer the question.\n"
+                            "4. Summarize relevant parts of the scraped content before answering, if helpful.\n"
+                            "5. Focus on clarity, factual accuracy, and conciseness. Avoid unnecessary elaboration.\n"
+                            "6. Use a neutral and informative tone.\n\n"
+
                             "=== Scraped Webpage Content ===\n"
                             f"{context}\n\n"
 
