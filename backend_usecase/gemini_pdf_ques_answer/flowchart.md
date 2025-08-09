@@ -1,4 +1,4 @@
-Here's the corrected and simplified Mermaid flowchart with model mappings that will render properly:
+
 
 ```mermaid
 flowchart TD
@@ -55,12 +55,4 @@ flowchart TD
 - **Green Nodes**: Storage/DB Systems
 - **Orange Nodes**: Technical Processes
 
-This version:
-1. Removes problematic special characters
-2. Uses simpler node labels
-3. Maintains clear model mapping via:
-   - Color coding (models in blue)
-   - Explicit model names in relevant nodes
-   - Supporting table for detailed specs
 
-The diagram now focuses on the core model interactions while remaining renderable in all Mermaid implementations.
