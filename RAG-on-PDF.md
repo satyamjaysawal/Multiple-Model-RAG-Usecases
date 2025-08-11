@@ -1,3 +1,7 @@
+
+
+
+
 # RAG on PDF (Text + OCR, Reading Order)
 
 Minimal RAG pipeline that:
@@ -6,6 +10,34 @@ Minimal RAG pipeline that:
 * builds a **FAISS** index with **cosine-like** retrieval,
 * answers questions **only from the PDF** with page citations,
 * runs in an **interactive** terminal loop.
+
+
+
+---
+
+Here’s a clean **Project Structure** you can drop into your README:
+
+```
+.
+├─ data/
+│  └─ sample.pdf            # your PDF (change path in main.py if needed)
+├─ main.py                  # extraction + OCR + chunk + FAISS + RAG Q&A
+├─ .env                     # GOOGLE_API_KEY=...
+├─ README.md                # this file
+└─ (generated at runtime)
+   ├─ pdf_linearized.txt    # reading-order text (selectable + OCR)
+   ├─ pdf_raw_text.txt      # per-page selectable text
+   ├─ pdf_ocr_text.txt      # per-image OCR text
+   └─ chunks.txt            # chunk dump for inspection
+```
+
+*(Optional)* If you keep a virtual environment:
+
+```
+venv/                       # your local Python venv (not committed)
+```
+
+
 
 ---
 
