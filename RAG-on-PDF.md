@@ -1,5 +1,62 @@
 
 
+
+
+The error occurs because Mermaid's GitHub renderer doesn't fully support HTML tags like `<br>` or `<b>` within node labels, as these are not part of the standard Mermaid syntax. To fix this, I'll simplify the node labels by removing HTML tags and formatting the text to be concise while preserving the libraries and method names. The structure and content will remain the same, just adapted for Mermaid compatibility.
+
+Here’s the corrected Mermaid flowchart:
+
+```mermaid
+graph TD
+    A[Start] --> B[Load .env and Configure GOOGLE_API_KEY | Libraries: dotenv, google.generativeai | Methods: load_dotenv, genai.configure]
+    B -->|Check API Key| C{API Key Valid?}
+    C -->|Yes| D[Open PDF | Library: fitz | Method: fitz.open]
+    C -->|No| E[Raise ValueError | Library: os]
+    D --> F[Extract Linear Docs | Library: fitz | Method: extract_linear_docs]
+    F -->|Process Pages| G[Get Text Blocks (type=0) | Library: fitz | Method: page.get_text]
+    F -->|Process Images| H[Get Image Blocks (type=1) | Library: fitz | Method: page.get_text]
+    G --> I[Create Document (selectable_text_docs) | Library: langchain_core | Method: Document]
+    H -->|Try Extract Image| J{PIL Image Extracted?}
+    J -->|Yes| K[OCR with Gemini | Libraries: PIL, google.generativeai | Methods: pdf.extract_image, ocr_with_gemini]
+    J -->|No| L[Rasterize Bbox to PIL | Libraries: fitz, PIL | Methods: _pil_from_bbox, page.get_pixmap]
+    L --> K
+    K -->|If OCR Text| M[Create Document (ocr_image_docs) | Library: langchain_core | Method: Document]
+    I --> N[Append to linear_docs | Library: langchain_core]
+    M --> N
+    N --> O[Save Linearized Output (pdf_linearized.txt) | Libraries: pathlib, io | Method: open]
+    N --> P[Save Selectable Text (pdf_raw_text.txt) | Libraries: pathlib, io | Method: open]
+    N --> Q[Save OCR Text (pdf_ocr_text.txt) | Libraries: pathlib, io | Method: open]
+    N --> R[Chunk Linear Docs | Library: langchain_text_splitters | Method: splitter.split_documents]
+    R --> S[Save Chunks (chunks.txt) | Libraries: pathlib, io | Method: open]
+    R --> T[Embed Chunks | Library: langchain_google_genai | Method: GoogleGenerativeAIEmbeddings]
+    T --> U[Create FAISS Vector Store (Cosine Similarity) | Library: langchain_community | Method: FAISS.from_documents]
+    U --> V[Setup Retriever (k=6) | Library: langchain_community | Method: vectorstore.as_retriever]
+    V --> W[Create RAG Chain | Libraries: langchain_google_genai, langchain_core | Methods: ChatGoogleGenerativeAI, create_stuff_documents_chain, create_retrieval_chain]
+    W --> X[Interactive Query Loop | Library: os | Method: input]
+    X -->|User Input| Y{Ask Question}
+    Y -->|Invoke RAG| Z[Retrieve and Generate Answer | Libraries: langchain_core, langchain_community | Method: rag_chain.invoke]
+    Z -->|Success| AA[Display Answer and Sources | Library: os | Method: print]
+    Z -->|Fail| AB{Retries > 0?}
+    AB -->|Yes| AC[Retry with k=3 | Library: langchain_community | Methods: vectorstore.as_retriever, create_retrieval_chain]
+    AB -->|No| AD[Raise Exception]
+    AC --> AA
+    X -->|Exit| AE[End]
+```
+
+### Changes Made
+- **Removed HTML Tags**: Replaced `<br>`, `<b>`, and other HTML formatting with plain text using `|` as a separator for readability (e.g., "Load .env and Configure GOOGLE_API_KEY | Libraries: dotenv, google.generativeai | Methods: load_dotenv, genai.configure").
+- **Preserved Content**: Kept all libraries and method names exactly as in the previous diagram, ensuring no loss of information.
+- **Mermaid-Compatible Syntax**: Ensured labels adhere to Mermaid's text requirements, avoiding unsupported tokens like `PS` (from `<b>` parsing issues).
+
+This diagram should now render correctly in GitHub or other Mermaid-compatible environments. Let me know if you need further tweaks or a different diagram type!
+
+
+
+
+****
+
+---
+
 ```mermaid
 graph TD
     %% Initialization
