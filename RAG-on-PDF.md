@@ -1,40 +1,85 @@
 
+
 ```mermaid
 graph TD
-    A[Start] --> B[Load .env and Configure GOOGLE_API_KEY<br><b>Libraries:</b> dotenv, google.generativeai<br><b>Methods:</b> load_dotenv, genai.configure]
-    B -->|Check API Key| C{API Key Valid?}
-    C -->|Yes| D[Open PDF<br><b>Library:</b> fitz<br><b>Method:</b> fitz.open]
-    C -->|No| E[Raise ValueError<br><b>Library:</b> os]
-    D --> F[Extract Linear Docs<br><b>Library:</b> fitz<br><b>Method:</b> extract_linear_docs]
-    F -->|Process Pages| G[Get Text Blocks<br>(type=0)<br><b>Library:</b> fitz<br><b>Method:</b> page.get_text]
-    F -->|Process Images| H[Get Image Blocks<br>(type=1)<br><b>Library:</b> fitz<br><b>Method:</b> page.get_text]
-    G --> I[Create Document<br>(selectable_text_docs)<br><b>Library:</b> langchain_core<br><b>Method:</b> Document]
-    H -->|Try Extract Image| J{PIL Image Extracted?}
-    J -->|Yes| K[OCR with Gemini<br><b>Libraries:</b> PIL, google.generativeai<br><b>Methods:</b> pdf.extract_image, ocr_with_gemini]
-    J -->|No| L[Rasterize Bbox to PIL<br><b>Libraries:</b> fitz, PIL<br><b>Methods:</b> _pil_from_bbox, page.get_pixmap]
+    %% Initialization
+    A[("Start")] --> B[Load Config]
+    B --> C{API Key Valid?}
+    C -->|Yes| D[Open PDF]
+    C -->|No| E[Error Exit]
+
+    %% Content Extraction
+    D --> F[Process PDF]
+    F --> G[Extract Text]
+    F --> H[Extract Images]
+
+    %% Text Processing Path
+    G --> I[Create Text Docs]
+    
+    %% Image Processing Path
+    H --> J{Image Extract?}
+    J -->|Success| K[Run OCR]
+    J -->|Fail| L[Rasterize BBox]
     L --> K
-    K -->|If OCR Text| M[Create Document<br>(ocr_image_docs)<br><b>Library:</b> langchain_core<br><b>Method:</b> Document]
-    I --> N[Append to linear_docs<br><b>Library:</b> langchain_core]
+    K --> M[Create OCR Docs]
+
+    %% Document Processing
+    I --> N[Combine Documents]
     M --> N
-    N --> O[Save Linearized Output<br>(pdf_linearized.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
-    N --> P[Save Selectable Text<br>(pdf_raw_text.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
-    N --> Q[Save OCR Text<br>(pdf_ocr_text.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
-    N --> R[Chunk Linear Docs<br><b>Library:</b> langchain_text_splitters<br><b>Method:</b> splitter.split_documents]
-    R --> S[Save Chunks<br>(chunks.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
-    R --> T[Embed Chunks<br><b>Library:</b> langchain_google_genai<br><b>Method:</b> GoogleGenerativeAIEmbeddings]
-    T --> U[Create FAISS Vector Store<br>(Cosine Similarity)<br><b>Library:</b> langchain_community<br><b>Method:</b> FAISS.from_documents]
-    U --> V[Setup Retriever<br>(k=6)<br><b>Library:</b> langchain_community<br><b>Method:</b> vectorstore.as_retriever]
-    V --> W[Create RAG Chain<br><b>Libraries:</b> langchain_google_genai, langchain_core<br><b>Methods:</b> ChatGoogleGenerativeAI, create_stuff_documents_chain, create_retrieval_chain]
-    W --> X[Interactive Query Loop<br><b>Library:</b> os<br><b>Method:</b> input]
-    X -->|User Input| Y{Ask Question}
-    Y -->|Invoke RAG| Z[Retrieve and Generate Answer<br><b>Libraries:</b> langchain_core, langchain_community<br><b>Method:</b> rag_chain.invoke]
-    Z -->|Success| AA[Display Answer and Sources<br><b>Library:</b> os<br><b>Method:</b> print]
-    Z -->|Fail| AB{Retries > 0?}
-    AB -->|Yes| AC[Retry with k=3<br><b>Library:</b> langchain_community<br><b>Methods:</b> vectorstore.as_retriever, create_retrieval_chain]
-    AB -->|No| AD[Raise Exception]
-    AC --> AA
-    X -->|Exit| AE[End]
+
+    %% Output Files
+    N --> O[Save Outputs]
+
+    %% RAG Pipeline
+    N --> P[Chunk Documents]
+    P --> Q[Generate Embeddings]
+    Q --> R[Build FAISS Index]
+    R --> S[Create Retriever]
+    S --> T[Setup RAG Chain]
+
+    %% Query Handling
+    T --> U[Query Loop]
+    U --> V{Question?}
+    V -->|Yes| W[Generate Answer]
+    W --> X[Show Results]
+    W -->|Error| Y{Retry?}
+    Y -->|Yes| Z[Reduce Scope]
+    Y -->|No| AA[Fail]
+    Z --> X
+    V -->|Exit| AB[End]
+
+    %% Library/Method Annotations
+    B -.->|dotenv.load_dotenv<br>os.getenv| B
+    D -.->|fitz.open| D
+    G -.->|page.get_text| G
+    H -.->|block.get| H
+    I -.->|langchain_core.Document| I
+    K -.->|PIL.Image.open<br>ocr_with_gemini| K
+    L -.->|_pil_from_bbox| L
+    M -.->|langchain_core.Document| M
+    O -.->|pathlib.Path.open| O
+    P -.->|RecursiveTextSplitter| P
+    Q -.->|GoogleGenerativeAIEmbeddings| Q
+    R -.->|FAISS.from_documents| R
+    S -.->|as_retriever| S
+    T -.->|create_retrieval_chain| T
+    W -.->|rag_chain.invoke| W
+
+    %% Styling
+    classDef process fill:#e6f3ff,stroke:#0066cc;
+    classDef decision fill:#ffeb99,stroke:#ffcc00;
+    classDef data fill:#e6ffe6,stroke:#009900;
+    classDef output fill:#f5f5f5,stroke:#696969;
+    classDef api fill:#ffe6e6,stroke:#cc0000;
+    classDef annotation fill:none,stroke:none;
+
+    class A,B,D,F,G,H,I,J,K,L,M,N,P,Q,R,S,T,U,V,W,X,Y,Z,AA,AB process;
+    class C,E,J,V,Y decision;
+    class O data;
+    class Q,T,W api;
+    style annotation fill:none,stroke:none,color:#666;
 ```
+
 
 # RAG on PDF (Text + OCR, Reading Order)
 
