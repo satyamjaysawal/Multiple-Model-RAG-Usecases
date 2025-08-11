@@ -1,6 +1,41 @@
 
 
-
+```mermaid
+graph TD
+    A[Start] --> B[Load .env and Configure GOOGLE_API_KEY<br><b>Libraries:</b> dotenv, google.generativeai<br><b>Methods:</b> load_dotenv, genai.configure]
+    B -->|Check API Key| C{API Key Valid?}
+    C -->|Yes| D[Open PDF<br><b>Library:</b> fitz<br><b>Method:</b> fitz.open]
+    C -->|No| E[Raise ValueError<br><b>Library:</b> os]
+    D --> F[Extract Linear Docs<br><b>Library:</b> fitz<br><b>Method:</b> extract_linear_docs]
+    F -->|Process Pages| G[Get Text Blocks<br>(type=0)<br><b>Library:</b> fitz<br><b>Method:</b> page.get_text]
+    F -->|Process Images| H[Get Image Blocks<br>(type=1)<br><b>Library:</b> fitz<br><b>Method:</b> page.get_text]
+    G --> I[Create Document<br>(selectable_text_docs)<br><b>Library:</b> langchain_core<br><b>Method:</b> Document]
+    H -->|Try Extract Image| J{PIL Image Extracted?}
+    J -->|Yes| K[OCR with Gemini<br><b>Libraries:</b> PIL, google.generativeai<br><b>Methods:</b> pdf.extract_image, ocr_with_gemini]
+    J -->|No| L[Rasterize Bbox to PIL<br><b>Libraries:</b> fitz, PIL<br><b>Methods:</b> _pil_from_bbox, page.get_pixmap]
+    L --> K
+    K -->|If OCR Text| M[Create Document<br>(ocr_image_docs)<br><b>Library:</b> langchain_core<br><b>Method:</b> Document]
+    I --> N[Append to linear_docs<br><b>Library:</b> langchain_core]
+    M --> N
+    N --> O[Save Linearized Output<br>(pdf_linearized.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
+    N --> P[Save Selectable Text<br>(pdf_raw_text.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
+    N --> Q[Save OCR Text<br>(pdf_ocr_text.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
+    N --> R[Chunk Linear Docs<br><b>Library:</b> langchain_text_splitters<br><b>Method:</b> splitter.split_documents]
+    R --> S[Save Chunks<br>(chunks.txt)<br><b>Libraries:</b> pathlib, io<br><b>Method:</b> open]
+    R --> T[Embed Chunks<br><b>Library:</b> langchain_google_genai<br><b>Method:</b> GoogleGenerativeAIEmbeddings]
+    T --> U[Create FAISS Vector Store<br>(Cosine Similarity)<br><b>Library:</b> langchain_community<br><b>Method:</b> FAISS.from_documents]
+    U --> V[Setup Retriever<br>(k=6)<br><b>Library:</b> langchain_community<br><b>Method:</b> vectorstore.as_retriever]
+    V --> W[Create RAG Chain<br><b>Libraries:</b> langchain_google_genai, langchain_core<br><b>Methods:</b> ChatGoogleGenerativeAI, create_stuff_documents_chain, create_retrieval_chain]
+    W --> X[Interactive Query Loop<br><b>Library:</b> os<br><b>Method:</b> input]
+    X -->|User Input| Y{Ask Question}
+    Y -->|Invoke RAG| Z[Retrieve and Generate Answer<br><b>Libraries:</b> langchain_core, langchain_community<br><b>Method:</b> rag_chain.invoke]
+    Z -->|Success| AA[Display Answer and Sources<br><b>Library:</b> os<br><b>Method:</b> print]
+    Z -->|Fail| AB{Retries > 0?}
+    AB -->|Yes| AC[Retry with k=3<br><b>Library:</b> langchain_community<br><b>Methods:</b> vectorstore.as_retriever, create_retrieval_chain]
+    AB -->|No| AD[Raise Exception]
+    AC --> AA
+    X -->|Exit| AE[End]
+```
 
 # RAG on PDF (Text + OCR, Reading Order)
 
