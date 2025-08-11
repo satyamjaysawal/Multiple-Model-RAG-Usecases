@@ -1,5 +1,4 @@
 
-
 ```mermaid
 graph TD
     A[Start] --> B[Load .env and Configure GOOGLE_API_KEY<br><b>Libraries:</b> dotenv, google.generativeai<br><b>Methods:</b> load_dotenv, genai.configure]
