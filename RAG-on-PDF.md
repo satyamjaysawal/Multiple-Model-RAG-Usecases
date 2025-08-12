@@ -1,5 +1,101 @@
 
 
+
+
+---
+
+
+Here's the Mermaid diagram for your PDF processing and RAG system, accurately representing the code flow:
+
+```mermaid
+graph TD
+    A["Start"] --> B["Load .env & Configure API"]
+    B --> C{"API Key Valid?"}
+    C -->|Yes| D["Open PDF (PyMuPDF)"]
+    C -->|No| E["Raise ValueError"]
+    D --> F["Extract Linear Docs"]
+    F --> G["Process Text Blocks"]
+    F --> H["Process Image Blocks"]
+    G --> I["Create Text Document"]
+    H --> J{"Image Extracted?"}
+    J -->|Yes| K["OCR with Gemini"]
+    J -->|No| L["Rasterize to PIL"]
+    L --> K
+    K --> M["Create OCR Document"]
+    I --> N["Combine Documents"]
+    M --> N
+    D --> O["PDFPlumber Tables?"]
+    O -->|Yes| P["Extract Structured Tables"]
+    O -->|No| Q["Skip Table Extraction"]
+    P --> N
+    N --> R["Derive Tables from Text"]
+    R --> S["Chunk Documents"]
+    S --> T{"Is Table?"}
+    T -->|Yes| U["Keep as Single Chunk"]
+    T -->|No| V["Split with TextSplitter"]
+    U --> W["Create FAISS Vector Store"]
+    V --> W
+    W --> X["Setup Retriever (k=6)"]
+    X --> Y["Create RAG Chain"]
+    Y --> Z["Interactive Query Loop"]
+    Z --> AA{"Ask Question"}
+    AA -->|Query| AB["Retrieve & Generate"]
+    AB --> AC{"Success?"}
+    AC -->|Yes| AD["Display Answer"]
+    AC -->|No| AE{"Retries > 0?"}
+    AE -->|Yes| AF["Retry with k=3"]
+    AE -->|No| AG["Raise Error"]
+    AF --> AD
+    AA -->|Exit| AH["End"]
+
+    %% Detailed Sub-processes
+    subgraph PDF Processing
+        F -->|Blocks| G
+        F -->|Images| H
+        O -->|"extract_tables()"| P
+        P -->|"serialize_rows()"| N
+    end
+
+    subgraph Table Handling
+        R -->|"try_vertical_columns_to_rows()"| S
+        T -->|"CSV/TSV/JSONL"| U
+    end
+
+    subgraph RAG System
+        X -->|"GoogleGenerativeAIEmbeddings"| Y
+        Y -->|"ChatGoogleGenerativeAI"| Z
+        AB -->|"similarity_search()"| AC
+    end
+
+    subgraph Error Handling
+        AC -->|"Exception"| AE
+        AG -->|"Fallback"| AH
+    end
+```
+
+Key features represented:
+1. **PDF Processing Path** (left branch):
+   - Text extraction → Document creation
+   - Image processing → OCR → Document creation
+   - Optional PDFPlumber table extraction
+
+2. **Table Handling**:
+   - Special logic for table preservation
+   - Vertical column detection
+   - CSV/TSV/JSONL serialization
+
+3. **RAG Pipeline**:
+   - Chunking with table preservation
+   - FAISS vector store with cosine similarity
+   - Retriever with fallback mechanism
+
+4. **Error Recovery**:
+   - API key validation
+   - OCR failure handling
+   - Retry mechanism with reduced chunk count
+
+The diagram maintains all key components from your code while organizing them into logical subsystems. Each decision point and fallback mechanism is explicitly represented.
+
 ---
 
 
