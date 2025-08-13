@@ -108,10 +108,10 @@ print("✅ Azure Form Recognizer extracted text saved to 'extracted_text_azure.t
 | Accuracy / Language support | 🟡 Varies                | ✅ Excellent                |
 
 ---
+****
 
-
-
-
+****
+****
 ****
 
 # 📄 **PDF Text Extractor with OCR using Azure Form Recognizer (Cloud-Based Solution)**
