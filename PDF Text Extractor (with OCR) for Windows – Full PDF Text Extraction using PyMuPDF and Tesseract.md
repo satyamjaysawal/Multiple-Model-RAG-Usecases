@@ -1,5 +1,70 @@
 
 
+
+Here's a detailed Mermaid flow diagram with example PDF content integration:
+
+```mermaid
+%%{init: {'theme': 'base', 'fontFamily': 'Segoe UI', 'gantt': {'barHeight': 20}}}%%
+flowchart TD
+    A([Start]) --> B["Initialize EasyOCR (English)"]
+    B --> C["Open: sample.pdf (2 pages)"]
+    C --> D["normal_text = ''\nocr_text = ''"]
+    
+    subgraph Page_Processing["Page Processing (Per Page)"]
+        direction TB
+        E{{"For each page (1-2)"}} --> F["Page 1: Digital Text\n'Invoice: INV123\nDate: 2025-08-14'"]
+        F --> G["normal_text += Digital Text"]
+        G --> H["Convert to Image (200DPI)"]
+        H --> I["OCR Results:\n'Invoice: INV123\nDate: 2025-08-14'"]
+        I --> J["ocr_text += OCR Results"]
+        
+        E --> K["Page 2: Image Only"]
+        K --> L["normal_text += '' (no digital text)"]
+        L --> M["Convert to Image"]
+        M --> N["OCR Results:\n'Item: Laptop\nPrice: $1200'"]
+        N --> O["ocr_text += OCR Results"]
+    end
+    
+    D --> Page_Processing
+    Page_Processing --> P["Close PDF"]
+    P --> Q["Combine:\ncomplete_text = normal_text + ocr_text"]
+    Q --> R["Save to extracted_text_easyocr.txt"]
+    R --> S([End])
+    
+    style A fill:#2ecc71,stroke:#27ae60
+    style S fill:#e74c3c,stroke:#c0392b
+    style E fill:#f39c12,stroke:#e67e22
+    style F,K fill:#3498db,stroke:#2980b9
+    style I,N fill:#2ecc71,stroke:#27ae60,stroke-dasharray:5
+    style R fill:#9b59b6,stroke:#8e44ad
+    
+    %% Example File Content
+    click F "data:image/svg+xml;base64,..." "Page 1 Preview"
+    click K "data:image/svg+xml;base64,..." "Page 2 Preview"
+```
+
+### Final Output Simulation:
+```plaintext
+[normal_text]
+Invoice: INV123
+Date: 2025-08-14
+
+[ocr_text]
+Invoice: INV123
+Date: 2025-08-14
+Item: Laptop
+Price: $1200
+```
+
+
+
+
+
+
+
+
+
+
 ---
 
 ## 📄 `README.md` (For Local Windows Only – with Full Code)
