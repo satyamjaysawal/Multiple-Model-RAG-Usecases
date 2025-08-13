@@ -43,6 +43,23 @@ flowchart TD
     click K "data:image/svg+xml;base64,..." "Page 2 Preview"
 ```
 
+### Integrated Example PDF Flow:
+1. **Page 1 (Digital+OCR)**:
+   ```mermaid
+   flowchart LR
+       F1["Digital Text Extraction"] -->|"Invoice: INV123\nDate: 2025-08-14"| G1
+       H1["Image Conversion"] -->|OCR| I1["Same text detected"]
+   ```
+   - *Result*: `normal_text` and `ocr_text` both get invoice details
+
+2. **Page 2 (Image-Only)**:
+   ```mermaid
+   flowchart LR
+       K1["Empty Digital Text"] --> L1
+       M1["Image Conversion"] -->|OCR| N1["'Item: Laptop\nPrice: $1200'"]
+   ```
+   - *Result*: Only `ocr_text` gets updated
+
 ### Final Output Simulation:
 ```plaintext
 [normal_text]
@@ -54,6 +71,22 @@ Invoice: INV123
 Date: 2025-08-14
 Item: Laptop
 Price: $1200
+```
+
+### Key Features:
+1. **Color-Coded Elements**:
+   - Green: Successful text extraction
+   - Blue: PDF content nodes
+   - Purple: File operation
+2. **Tooltip Integration** (Conceptual):
+   - Hover on page nodes shows example content
+3. **Duplicate Text Flow**:
+   - Highlighted via dashed green borders for OCR results
+
+Would you like me to:
+1. Add a parallel flow for Hindi PDF processing?
+2. Include error handling paths (e.g., corrupted PDF)?
+3. Visualize the deduplication optimization?
 ```
 
 
