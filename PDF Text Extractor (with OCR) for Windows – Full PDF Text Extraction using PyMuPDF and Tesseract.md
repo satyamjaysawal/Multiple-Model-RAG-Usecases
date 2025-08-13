@@ -73,21 +73,7 @@ Item: Laptop
 Price: $1200
 ```
 
-### Key Features:
-1. **Color-Coded Elements**:
-   - Green: Successful text extraction
-   - Blue: PDF content nodes
-   - Purple: File operation
-2. **Tooltip Integration** (Conceptual):
-   - Hover on page nodes shows example content
-3. **Duplicate Text Flow**:
-   - Highlighted via dashed green borders for OCR results
 
-Would you like me to:
-1. Add a parallel flow for Hindi PDF processing?
-2. Include error handling paths (e.g., corrupted PDF)?
-3. Visualize the deduplication optimization?
-```
 
 
 
