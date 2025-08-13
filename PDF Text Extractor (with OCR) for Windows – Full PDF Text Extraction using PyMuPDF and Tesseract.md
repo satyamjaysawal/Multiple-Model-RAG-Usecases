@@ -1,9 +1,4 @@
-Bahut achchha! Niche aapke liye **complete project folder ke liye `README.md`** diya gaya hai, jisme:
 
-* ✅ **Code included** hai (direct script ke sath)
-* ✅ **Use cases and purpose** clearly likha gaya hai
-* ✅ Specifically **Local Windows System ke liye** mention kiya gaya hai
-* ✅ Markdown format mein hai (direct GitHub repo mein use ho sakta hai)
 
 ---
 
