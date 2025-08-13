@@ -1,5 +1,151 @@
 
 
+
+****
+****
+
+
+
+Haan, agar aap **PDF se text extract** karna chahte hain (chahe wo selectable text ho ya image-based text), to **`PyMuPDF` + `Tesseract` / `EasyOCR`** ke alawa bhi kai alternatives hain. Neeche best libraries ka breakdown diya gaya hai:
+
+---
+
+## 🧰 Text Extraction ke liye Popular Libraries
+
+| Library                   | Selectable Text | OCR (Image Text) | Works Without C:\ Tools             | Notes                              |
+| ------------------------- | --------------- | ---------------- | ----------------------------------- | ---------------------------------- |
+| **PyMuPDF (fitz)**        | ✅ Yes           | ❌ No             | ✅ Yes                               | Fast & accurate for digital PDFs   |
+| **pdfplumber**            | ✅ Yes           | ❌ No             | ✅ Yes                               | Great for tables and layout        |
+| **pdfminer.six**          | ✅ Yes           | ❌ No             | ✅ Yes                               | Low-level control, but verbose     |
+| **Tesseract OCR**         | ❌ No            | ✅ Yes            | ❌ Needs Tesseract install (C drive) |                                    |
+| **EasyOCR**               | ❌ No            | ✅ Yes            | ✅ Yes (no Tesseract needed)         |                                    |
+| **PaddleOCR**             | ❌ No            | ✅ Yes            | ✅ Yes                               | High accuracy, supports Hindi well |
+| **Azure Form Recognizer** | ✅ Yes           | ✅ Yes            | ❌ Needs internet + Azure API        |                                    |
+| **Amazon Textract**       | ✅ Yes           | ✅ Yes            | ❌ AWS setup required                |                                    |
+
+---
+
+## ✅ Recommended Combos
+
+### 🔹 If Text is Selectable (not scanned):
+
+```python
+import fitz  # PyMuPDF
+
+doc = fitz.open("sample.pdf")
+text = ""
+for page in doc:
+    text += page.get_text()
+doc.close()
+print(text)
+```
+
+or
+
+```python
+import pdfplumber
+
+with pdfplumber.open("sample.pdf") as pdf:
+    text = ""
+    for page in pdf.pages:
+        text += page.extract_text()
+print(text)
+```
+
+---
+
+### 🔹 If Text is Image (Scanned PDF):
+
+#### ✔ Using EasyOCR (No poppler, No tesseract):
+
+```python
+from pdf2image import convert_from_path
+from PIL import Image
+import numpy as np
+import easyocr
+import io
+
+reader = easyocr.Reader(['en'])  # or ['en', 'hi']
+images = convert_from_path("sample.pdf")
+ocr_text = ""
+
+for img in images:
+    img_array = np.array(img)
+    results = reader.readtext(img_array)
+    for _, text, _ in results:
+        ocr_text += text + "\n"
+
+print(ocr_text)
+```
+
+#### ✔ Using PaddleOCR (Optional):
+
+```bash
+pip install paddleocr paddlepaddle
+```
+
+```python
+from paddleocr import PaddleOCR
+from pdf2image import convert_from_path
+import numpy as np
+
+ocr = PaddleOCR(use_angle_cls=True, lang='en')  # or 'en', 'hi'
+
+images = convert_from_path("sample.pdf")
+for img in images:
+    result = ocr.ocr(np.array(img))
+    for line in result[0]:
+        print(line[1][0])
+```
+
+---
+
+## 🎯 When to Use What?
+
+| Situation                    | Best Tool                                  |
+| ---------------------------- | ------------------------------------------ |
+| ✅ Digital PDFs (editable)    | `PyMuPDF`, `pdfplumber`                    |
+| 🖼️ Scanned PDFs             | `EasyOCR`, `PaddleOCR`, `Tesseract`        |
+| 🧾 Tables in PDFs            | `pdfplumber`                               |
+| 💼 Business docs, forms, IDs | `Azure Form Recognizer`, `Amazon Textract` |
+
+---
+
+
+
+
+
+
+
+
+
+
+
+****
+
+
+****
+
+****
+
+
+
+****
+
+****
+
+
+
+
+
+
+
+
+
+
+
+
+
 Agar aap **Azure AI** ka use karke PDF se **text extraction (including OCR)** karna chahte hain, toh aapko local `pytesseract`, `fitz`, `poppler` ki jagah **Azure's Cognitive Services** ka use karna hoga — specifically **Azure Form Recognizer** ya **Computer Vision API**.
 
 ---
