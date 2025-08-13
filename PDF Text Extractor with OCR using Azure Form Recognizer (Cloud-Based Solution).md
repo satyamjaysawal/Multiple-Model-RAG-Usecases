@@ -114,22 +114,15 @@ print("✅ Azure Form Recognizer extracted text saved to 'extracted_text_azure.t
 
 ****
 
-PDF Text & Table Extractor with OCR using Azure Form Recognizer (Cloud-Based AI Solution)
+# 📄 **PDF Text Extractor with OCR using Azure Form Recognizer (Cloud-Based Solution)**
 ****
 
 ****
 
-Absolutely! Here's the **complete solution** bundled together in one place — including:
-
-* ✅ Title
-* ✅ Azure-based Python script (extracts text, tables, key-value pairs, fields)
-* ✅ Full step-by-step instructions for VS Code
-* ✅ Sample output (realistic)
-* ✅ Ready for local testing or project packaging
 
 ---
 
-# 📄 **PDF Text Extractor with OCR using Azure Form Recognizer (Cloud-Based Solution)**
+
 
 This project uses **Azure AI Form Recognizer** to extract:
 
