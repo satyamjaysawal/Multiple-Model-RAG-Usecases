@@ -472,22 +472,219 @@ Let me know if you'd like:
 
 I'll generate it for you!
 
+****
+
+****
+
+****
+****
+
+****
+
+****
+
+****
+
+Haan, bilkul.
+Ab **Azure Form Recognizer** ka naam officially change ho chuka hai **Azure AI Document Intelligence** me.
+Isliye latest SDK me aap `azure.ai.documentintelligence` use karte ho instead of `azure.ai.formrecognizer`.
 
 
 
+Aapka code ka structure same rahega, sirf **import path** aur thoda parameter naming update hota hai.
+Yeh updated example dekh lo:
 
 
+Here’s your **complete README.md** for the **Azure AI Document Intelligence PDF Text & Table Extractor**.
+
+---
+
+# PDF Text & Table Extractor using Azure AI Document Intelligence
+
+## 📌 Overview
+
+This project extracts **text, tables, and key-value pairs** from PDF documents using **Azure AI Document Intelligence** (formerly Azure Form Recognizer).
+It works on both **digitally generated PDFs** and **scanned documents**.
+
+---
+
+## 🚀 Features
+
+* Extracts **complete text** from PDFs.
+* Detects and extracts **tables** with rows & columns.
+* Retrieves **key-value pairs** from forms.
+* Saves output in `.txt` and `.json` formats.
+* Works with any PDF size supported by Azure Document Intelligence.
+
+---
+
+## 🛠 Prerequisites
+
+Before running the project, make sure you have:
+
+1. **Python 3.8+** installed.
+2. An **Azure AI Document Intelligence resource**.
+
+   * Create from: [Azure Portal](https://portal.azure.com/) → **Create a resource** → **Azure AI Document Intelligence**
+   * Copy your **Endpoint** and **Key** from the Azure portal.
+3. Install required Python packages:
+
+```bash
+pip install azure-ai-documentintelligence azure-core
+```
+
+---
+
+## 📂 Project Structure
+
+```
+project/
+│-- sample.pdf                  # Your PDF file
+│-- extract_pdf_azure.py        # Main Python script
+│-- extracted_text_azure.txt    # Output text file
+│-- extracted_data_azure.json   # Output JSON with tables & key-value pairs
+│-- README.md                   # Project documentation
+```
+
+---
+
+## 💻 Usage
+
+### 1️⃣ Set up Azure credentials in the script
+
+Edit `extract_pdf_azure.py` and update:
+
+```python
+endpoint = "https://<your-resource-name>.cognitiveservices.azure.com/"
+key = "<your-document-intelligence-key>"
+pdf_path = "sample.pdf"
+```
+
+---
+
+### 2️⃣ Run the script
+
+```bash
+python extract_pdf_azure.py
+```
+
+---
+
+### 3️⃣ Script Code (Full Example)
+
+```python
+from azure.ai.documentintelligence import DocumentIntelligenceClient
+from azure.core.credentials import AzureKeyCredential
+import json
+
+# Azure Document Intelligence credentials
+endpoint = "https://<your-resource-name>.cognitiveservices.azure.com/"
+key = "<your-document-intelligence-key>"
+
+# PDF file to analyze
+pdf_path = "sample.pdf"
+
+# Step 1: Create client
+client = DocumentIntelligenceClient(endpoint=endpoint, credential=AzureKeyCredential(key))
+
+# Step 2: Read the PDF as bytes and start analysis
+with open(pdf_path, "rb") as f:
+    poller = client.begin_analyze_document("prebuilt-document", document=f)
+    result = poller.result()
+
+# Step 3: Extract text
+extracted_text = ""
+for page in result.pages:
+    for line in page.lines:
+        extracted_text += line.content + "\n"
+
+# Step 4: Extract tables
+tables_data = []
+for table in result.tables:
+    table_rows = []
+    for cell in table.cells:
+        while len(table_rows) <= cell.row_index:
+            table_rows.append([])
+        while len(table_rows[cell.row_index]) <= cell.column_index:
+            table_rows[cell.row_index].append("")
+        table_rows[cell.row_index][cell.column_index] = cell.content
+    tables_data.append(table_rows)
+
+# Step 5: Extract key-value pairs
+key_value_pairs = []
+if hasattr(result, "key_value_pairs") and result.key_value_pairs:
+    for kv in result.key_value_pairs:
+        key = kv.key.content if kv.key else ""
+        value = kv.value.content if kv.value else ""
+        key_value_pairs.append({"key": key, "value": value})
+
+# Step 6: Save text output
+with open("extracted_text_azure.txt", "w", encoding="utf-8") as f:
+    f.write(extracted_text)
+
+# Step 7: Save structured JSON output
+output_data = {
+    "text": extracted_text,
+    "tables": tables_data,
+    "key_value_pairs": key_value_pairs
+}
+with open("extracted_data_azure.json", "w", encoding="utf-8") as f:
+    json.dump(output_data, f, ensure_ascii=False, indent=4)
+
+print("✅ Extraction completed!")
+print("📄 Text saved to 'extracted_text_azure.txt'")
+print("📊 Data saved to 'extracted_data_azure.json'")
+```
+
+---
+
+## 📌 Sample Output
+
+### **`extracted_text_azure.txt`**
+
+```
+Invoice Number: 12345
+Date: 2025-08-14
+Item     Qty     Price
+Laptop   1       $1200
+Mouse    2       $40
+```
+
+### **`extracted_data_azure.json`**
+
+```json
+{
+    "text": "Invoice Number: 12345\nDate: 2025-08-14\nItem     Qty     Price\nLaptop   1       $1200\nMouse    2       $40\n",
+    "tables": [
+        [
+            ["Item", "Qty", "Price"],
+            ["Laptop", "1", "$1200"],
+            ["Mouse", "2", "$40"]
+        ]
+    ],
+    "key_value_pairs": [
+        {"key": "Invoice Number", "value": "12345"},
+        {"key": "Date", "value": "2025-08-14"}
+    ]
+}
+```
+
+---
+
+## 🎯 Purpose & Uses
+
+* Automate **invoice data extraction**.
+* Extract **tables** from PDF reports.
+* Get **key-value pairs** from forms without manual data entry.
+* Process both **scanned PDFs** and **digital PDFs**.
+
+---
+
+If you want, I can now **merge this Azure version with your local EasyOCR/PyMuPDF version** so you have **one README** for both **cloud** and **local** extraction workflows.
+Do you want me to do that?
 
 
-
-
-
-
-
-
-
-
-
+****
 
 ****
 
