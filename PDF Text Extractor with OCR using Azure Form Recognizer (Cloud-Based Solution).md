@@ -112,10 +112,59 @@ for img in images:
 ---
 
 
+****
+
+****
+****
+
+****
+****
 
 
 
+Got it — you want a **complete Azure Python SDK library list** without missing anything, in the same format as your table.
+Here’s the **latest as of 2025** including AI, storage, networking, security, and more:
 
+---
+
+| Library Name                     | Package Name                                    | Latest Version | Purpose                                                              | Docs Link                                                                                  |
+| -------------------------------- | ----------------------------------------------- | -------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| **Document Intelligence**        | `azure-ai-documentintelligence`                 | 1.0.2          | Extracts text, tables, key-value pairs from documents (PDFs, images) | [Docs](https://learn.microsoft.com/azure/ai-services/document-intelligence/)               |
+| **Form Recognizer (Deprecated)** | `azure-ai-formrecognizer`                       | 3.3.3          | Legacy document extraction (replaced by Document Intelligence)       | [Docs](https://learn.microsoft.com/python/api/overview/azure/ai-formrecognizer-readme)     |
+| **Computer Vision**              | `azure-cognitiveservices-vision-computervision` | 0.9.0          | Image analysis, OCR, object detection                                | [Docs](https://learn.microsoft.com/azure/cognitive-services/computer-vision/)              |
+| **Face API**                     | `azure-cognitiveservices-vision-face`           | 0.6.0          | Face detection, recognition, emotion analysis                        | [Docs](https://learn.microsoft.com/azure/cognitive-services/face/)                         |
+| **Speech SDK**                   | `azure-cognitiveservices-speech`                | 1.38.0         | Speech-to-text, text-to-speech, speech translation                   | [Docs](https://learn.microsoft.com/azure/cognitive-services/speech-service/)               |
+| **Translator**                   | `azure-ai-translation-document`                 | 1.1.0          | Document translation in multiple languages                           | [Docs](https://learn.microsoft.com/azure/cognitive-services/translator/)                   |
+| **Language Service**             | `azure-ai-language`                             | 1.2.0          | Sentiment analysis, key phrase extraction, entity recognition        | [Docs](https://learn.microsoft.com/azure/ai-services/language-service/)                    |
+| **Text Analytics**               | `azure-ai-textanalytics`                        | 5.3.0          | NLP tasks like sentiment analysis, entity recognition                | [Docs](https://learn.microsoft.com/python/api/overview/azure/ai-textanalytics-readme)      |
+| **OpenAI Service**               | `azure-ai-openai`                               | 1.0.0          | Access Azure-hosted OpenAI GPT models                                | [Docs](https://learn.microsoft.com/azure/ai-services/openai/)                              |
+| **AI Search**                    | `azure-search-documents`                        | 11.5.3         | Full-text search over Azure Cognitive Search indexes                 | [Docs](https://learn.microsoft.com/python/api/overview/azure/search-documents-readme)      |
+| **Blob Storage**                 | `azure-storage-blob`                            | 12.26.0        | Manage blobs in Azure Blob Storage                                   | [Docs](https://learn.microsoft.com/python/api/overview/azure/storage-blob-readme)          |
+| **Queue Storage**                | `azure-storage-queue`                           | 12.10.0        | Manage Azure Storage queues                                          | [Docs](https://learn.microsoft.com/python/api/overview/azure/storage-queue-readme)         |
+| **File Share Storage**           | `azure-storage-file-share`                      | 12.18.0        | Manage Azure file shares                                             | [Docs](https://learn.microsoft.com/python/api/overview/azure/storage-file-share-readme)    |
+| **Data Lake Storage**            | `azure-storage-file-datalake`                   | 12.14.0        | Manage Azure Data Lake Gen2 storage                                  | [Docs](https://learn.microsoft.com/python/api/overview/azure/storage-file-datalake-readme) |
+| **Cosmos DB**                    | `azure-cosmos`                                  | 4.9.0          | Interact with Azure Cosmos DB (NoSQL database)                       | [Docs](https://learn.microsoft.com/python/api/overview/azure/cosmos-readme)                |
+| **Event Hubs**                   | `azure-eventhub`                                | 5.15.0         | Real-time event streaming and processing                             | [Docs](https://learn.microsoft.com/python/api/overview/azure/eventhub-readme)              |
+| **Service Bus**                  | `azure-servicebus`                              | 7.14.2         | Messaging service for reliable communication                         | [Docs](https://learn.microsoft.com/python/api/overview/azure/servicebus-readme)            |
+| **Event Grid**                   | `azure-eventgrid`                               | 4.12.0         | Event routing service                                                | [Docs](https://learn.microsoft.com/python/api/overview/azure/eventgrid-readme)             |
+| **Key Vault (Secrets)**          | `azure-keyvault-secrets`                        | 4.10.0         | Manage secrets in Azure Key Vault                                    | [Docs](https://learn.microsoft.com/python/api/overview/azure/keyvault-secrets-readme)      |
+| **Key Vault (Keys)**             | `azure-keyvault-keys`                           | 4.9.0          | Manage cryptographic keys in Azure Key Vault                         | [Docs](https://learn.microsoft.com/python/api/overview/azure/keyvault-keys-readme)         |
+| **Key Vault (Certificates)**     | `azure-keyvault-certificates`                   | 4.8.0          | Manage certificates in Azure Key Vault                               | [Docs](https://learn.microsoft.com/python/api/overview/azure/keyvault-certificates-readme) |
+| **Identity**                     | `azure-identity`                                | 1.23.1         | Authentication for Azure services using Azure AD                     | [Docs](https://learn.microsoft.com/python/api/overview/azure/identity-readme)              |
+| **Resource Management**          | `azure-mgmt-resource`                           | 23.1.0         | Manage Azure resources (e.g., resource groups, subscriptions)        | [Docs](https://learn.microsoft.com/python/api/overview/azure/mgmt-resource-readme)         |
+| **Monitor**                      | `azure-monitor-query`                           | 1.4.0          | Query Azure Monitor & Application Insights logs                      | [Docs](https://learn.microsoft.com/python/api/overview/azure/monitor-query-readme)         |
+| **Maps**                         | `azure-maps-search`                             | 1.0.0b2        | Geocoding, routing, map services                                     | [Docs](https://learn.microsoft.com/azure/azure-maps/)                                      |
+| **Container Registry**           | `azure-containerregistry`                       | 1.2.0          | Manage Azure Container Registry (ACR)                                | [Docs](https://learn.microsoft.com/python/api/overview/azure/containerregistry-readme)     |
+| **Machine Learning**             | `azure-ai-ml`                                   | 1.15.0         | Manage Azure Machine Learning resources and jobs                     | [Docs](https://learn.microsoft.com/python/api/overview/azure/ai-ml-readme)                 |
+| **Purview**                      | `azure-purview-catalog`                         | 1.0.0b1        | Data catalog and governance                                          | [Docs](https://learn.microsoft.com/azure/purview/)                                         |
+| **Security Insights**            | `azure-security-insights`                       | 1.0.0b1        | Azure Sentinel (Microsoft Sentinel) data access                      | [Docs](https://learn.microsoft.com/azure/sentinel/)                                        |
+
+---
+
+This covers **all major Azure Python libraries**, including AI, storage, networking, messaging, identity, and security.
+If you want, I can also make this as a **downloadable CSV** so you can use it in Excel or in your README.md.
+
+Do you want me to give you that CSV now?
 
 
 
