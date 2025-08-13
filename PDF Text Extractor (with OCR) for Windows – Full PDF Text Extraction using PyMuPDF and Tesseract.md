@@ -43,22 +43,6 @@ flowchart TD
     click K "data:image/svg+xml;base64,..." "Page 2 Preview"
 ```
 
-### Integrated Example PDF Flow:
-1. **Page 1 (Digital+OCR)**:
-   ```mermaid
-   flowchart LR
-       F1["Digital Text Extraction"] -->|"Invoice: INV123\nDate: 2025-08-14"| G1
-       H1["Image Conversion"] -->|OCR| I1["Same text detected"]
-   ```
-   - *Result*: `normal_text` and `ocr_text` both get invoice details
-
-2. **Page 2 (Image-Only)**:
-   ```mermaid
-   flowchart LR
-       K1["Empty Digital Text"] --> L1
-       M1["Image Conversion"] -->|OCR| N1["'Item: Laptop\nPrice: $1200'"]
-   ```
-   - *Result*: Only `ocr_text` gets updated
 
 ### Final Output Simulation:
 ```plaintext
@@ -72,16 +56,6 @@ Date: 2025-08-14
 Item: Laptop
 Price: $1200
 ```
-
-
-
-
-
-
-
-
-
-
 
 
 ---
