@@ -271,11 +271,19 @@ print("✅ Azure Form Recognizer extracted text saved to 'extracted_text_azure.t
 ****
 
 
+## 📄 PDF Text Extractor with OCR using EasyOCR, PyMuPDF, and Pillow – Full Offline Solution for Extracting Text from Digital and Scanned PDFs (No Tesseract/Poppler Required, Windows/Linux/Mac)
+
+****
+
+****
+
+****
+
 Great! Since it's working now, here's a complete and professional `README.md` for your project, written specifically for local development with **EasyOCR**, **PyMuPDF**, and **Pillow**, and includes detailed steps for using in **Visual Studio Code (VS Code)**.
 
 ---
 
-## 📄 `README.md` – PDF Text Extractor using EasyOCR (No Tesseract or Poppler Needed)
+
 
 ````markdown
 # 📄 PDF Text Extractor (EasyOCR + PyMuPDF + Pillow)
